@@ -22,3 +22,5 @@ def start_menu():
 
 print_intro()
 start_menu()
+exitKey = input('Press any key to exit: ')
+
