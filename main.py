@@ -17,7 +17,7 @@ def print_intro():
 
 
 def start_menu():
-    print('')
+    print(' ')
 
 
 print_intro()
