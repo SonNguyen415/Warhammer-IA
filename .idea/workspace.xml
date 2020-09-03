@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43f99a95-1276-4620-a690-22fb5dd24231" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/switcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Warhammer-IA.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Warhammer-IA.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +53,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tree.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -79,6 +74,8 @@
       <workItem from="1597760504550" duration="953000" />
       <workItem from="1597765937691" duration="4754000" />
       <workItem from="1597979845297" duration="382000" />
+      <workItem from="1598434075444" duration="369000" />
+      <workItem from="1598506069651" duration="69000" />
     </task>
     <servers />
   </component>
@@ -86,35 +83,35 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="83" y="73" width="1071" height="827" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597812953293">
+    <state x="83" y="49" width="1071" height="851" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598434092240">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="83" y="73" width="1071" height="827" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1597812953293" />
+    <state x="83" y="49" width="1071" height="851" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1598434092240" />
     <state x="110" y="119" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1597760767107" />
     <state x="83" y="119" width="1071" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.835@0.23.1440.835" timestamp="1597766028330" />
     <state x="436" y="231" key="FileChooserDialogImpl" timestamp="1597760764620">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="436" y="231" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1597760764620" />
-    <state width="1398" height="148" key="GridCell.Tab.0.bottom" timestamp="1597834752261">
+    <state width="1398" height="148" key="GridCell.Tab.0.bottom" timestamp="1598434093602">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="148" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1597834752261" />
+    <state width="1398" height="148" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1598434093602" />
     <state width="1340" height="230" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597761259763" />
-    <state width="1398" height="148" key="GridCell.Tab.0.center" timestamp="1597834752260">
+    <state width="1398" height="148" key="GridCell.Tab.0.center" timestamp="1598434093601">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="148" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1597834752260" />
+    <state width="1398" height="148" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1598434093601" />
     <state width="1340" height="230" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597761259763" />
-    <state width="1398" height="148" key="GridCell.Tab.0.left" timestamp="1597834752256">
+    <state width="1398" height="148" key="GridCell.Tab.0.left" timestamp="1598434093600">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="148" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1597834752256" />
+    <state width="1398" height="148" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1598434093600" />
     <state width="1340" height="230" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597761259763" />
-    <state width="1398" height="148" key="GridCell.Tab.0.right" timestamp="1597834752260">
+    <state width="1398" height="148" key="GridCell.Tab.0.right" timestamp="1598434093602">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="148" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1597834752260" />
+    <state width="1398" height="148" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1598434093602" />
     <state width="1340" height="230" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597761259763" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1597813172194">
       <screen x="0" y="0" width="1440" height="900" />
@@ -122,6 +119,7 @@
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1597813172194" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Warhammer_IA$Warhammer_IA.coverage" NAME="Warhammer-IA Coverage Results" MODIFIED="1598434093576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Warhammer_IA$main.coverage" NAME="Warhammer-IA Coverage Results" MODIFIED="1597825997938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
