@@ -1,3 +1,6 @@
+from content import *
+from random import *
+
 class TreeNode(object):
     def __init__(self, data):
         self.data = data
@@ -9,15 +12,17 @@ class TreeNode(object):
         self.children.append(child)
 
     def get_level(self):
-        level = 0
+        level = 1
         p = self.parent
         while p:
             level += 1
             p = p.parent
         return level
 
-    def get_next(self):
-        return self.children[0]
+    def get_next_scene(self):
+        n = randint(0, len(self.children)-1)
+        return self.children[n]
+
 
     def tree_travel(self):
         spaces = "  "
@@ -25,69 +30,34 @@ class TreeNode(object):
             print(self.data)
             for child in self.children:
                 print(spaces + child.data)
-            choice = input('Select your choices: ')
-            for child in self.children:
-                if str(child.data).lower() == choice.lower():
-                    nextScene = child.get_next()
-                    nextScene.tree_travel()
+            choice = int(input('Select your choices: '))
+            chosen = self.children[choice-1]
+            print(chosen.data)
+            nextScene = chosen.get_next_scene()
+            print(nextScene.data)
+            nextScene.tree_travel()
         else:
             return
 
-
 def build_product_tree():
-    root = TreeNode("Intro")
 
-    choice1a = TreeNode("Choice 1a")
-    choice2a = TreeNode("Choice 2a")
+    root = TreeNode(S1Acontent)
 
-    scene1a = TreeNode("Scene 1a")
-    scene2a = TreeNode("Scene 2a")
-    scene3a = TreeNode("Scene 3a")
-    scene4a = TreeNode("Scene 4a")
+    nC1A = TreeNode(C1Acontent)
+    nC1B = TreeNode(C1Bcontent)
 
-    choice1b = TreeNode("Choice 1b")
-    choice2b = TreeNode("Choice 2b")
-    choice3b = TreeNode("Choice 3b")
-    choice4b = TreeNode("Choice 4b")
-    choice5b = TreeNode("Choice 5b")
-    choice6b = TreeNode("Choice 6b")
-    choice7b = TreeNode("Choice 7b")
-    choice8b = TreeNode("Choice 8b")
+    nS2A = TreeNode(S2Acontent)
+    nS2B = TreeNode(S2Bcontent)
+    nS2C = TreeNode(S2Ccontent)
+    nS2D = TreeNode(S2Dcontent)
 
-    scene1b = TreeNode("Scene 1b")
-    scene2b = TreeNode("Scene 2b")
-    scene3b = TreeNode("Scene 3b")
-    scene4b = TreeNode("Scene 4b")
-    scene5b = TreeNode("Scene 5b")
-    scene6b = TreeNode("Scene 6b")
-    scene7b = TreeNode("Scene 7b")
-    scene8b = TreeNode("Scene 8b")
+    root.add_child(nC1A)
+    root.add_child(nC1B)
 
-    root.add_child(choice1a)
-    root.add_child(choice2a)
-
-    choice1a.add_child(scene1a)
-    choice1a.add_child(scene2a)
-    choice2a.add_child(scene3a)
-    choice2a.add_child(scene4a)
-
-    scene1a.add_child(choice1b)
-    scene1a.add_child(choice2b)
-    scene2a.add_child(choice3b)
-    scene2a.add_child(choice4b)
-    scene3a.add_child(choice5b)
-    scene3a.add_child(choice6b)
-    scene4a.add_child(choice7b)
-    scene4a.add_child(choice8b)
-
-    choice1b.add_child(scene1b)
-    choice2b.add_child(scene2b)
-    choice3b.add_child(scene3b)
-    choice4b.add_child(scene4b)
-    choice5b.add_child(scene5b)
-    choice6b.add_child(scene6b)
-    choice7b.add_child(scene7b)
-    choice8b.add_child(scene8b)
+    nC1A.add_child(nS2A)
+    nC1A.add_child(nS2B)
+    nC1B.add_child(nS2C)
+    nC1B.add_child(nS2D)
 
     return root
 

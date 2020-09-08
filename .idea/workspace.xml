@@ -36,13 +36,23 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tree.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Sonmo\Documents\GitHub\Warhammer-IA\text" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sonmo\Documents\GitHub\Warhammer-IA\text" />
+      <recent name="C:\Users\Sonmo\Documents\GitHub\Warhammer-IA" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="Warhammer-IA" type="PythonConfigurationType" factoryName="Python" singleton="false">
@@ -88,36 +98,48 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="110" y="119" width="1071" height="827" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598687394542">
+    <state x="110" y="62" width="1092" height="978" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599582292671">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="83" y="73" width="1071" height="827" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1597812953293" />
-    <state x="110" y="119" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1598687394542" />
+    <state x="110" y="62" width="1092" height="978" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599582292671" />
     <state x="83" y="119" width="1071" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.835@0.23.1440.835" timestamp="1597766028330" />
-    <state x="436" y="231" key="FileChooserDialogImpl" timestamp="1597760764620">
+    <state x="764" y="343" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1599582506236">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="436" y="231" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1597760764620" />
-    <state width="1427" height="230" key="GridCell.Tab.0.bottom" timestamp="1598794936363">
+    <state x="764" y="343" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1599582506236" />
+    <state x="719" y="288" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1599579534333">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="719" y="288" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599579534333" />
+    <state x="827" y="287" key="EnvironmentVariablesDialog" timestamp="1599577182737">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="827" y="287" key="EnvironmentVariablesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599577182737" />
+    <state x="436" y="231" key="FileChooserDialogImpl" timestamp="1599582290048">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="436" y="231" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1599582290048" />
+    <state width="1362" height="240" key="GridCell.Tab.0.bottom" timestamp="1599582519734">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1398" height="148" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1597834752261" />
-    <state width="1427" height="230" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1598794936363" />
-    <state width="1427" height="230" key="GridCell.Tab.0.center" timestamp="1598794936362">
+    <state width="1362" height="240" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599582519734" />
+    <state width="1362" height="240" key="GridCell.Tab.0.center" timestamp="1599582519734">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1398" height="148" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1597834752260" />
-    <state width="1427" height="230" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1598794936362" />
-    <state width="1427" height="230" key="GridCell.Tab.0.left" timestamp="1598794936362">
+    <state width="1362" height="240" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599582519734" />
+    <state width="1362" height="240" key="GridCell.Tab.0.left" timestamp="1599582519734">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1398" height="148" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1597834752256" />
-    <state width="1427" height="230" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1598794936362" />
-    <state width="1427" height="230" key="GridCell.Tab.0.right" timestamp="1598794936363">
+    <state width="1362" height="240" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599582519734" />
+    <state width="1362" height="240" key="GridCell.Tab.0.right" timestamp="1599582519734">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1398" height="148" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1597834752260" />
-    <state width="1427" height="230" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1598794936363" />
+    <state width="1362" height="240" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599582519734" />
     <state width="1427" height="284" key="GridCell.Tab.1.bottom" timestamp="1598794935005">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -134,14 +156,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1427" height="284" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1598794935004" />
-    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup" timestamp="1598689991431">
+    <state x="490" y="186" key="SettingsEditor" timestamp="1599577673363">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="490" y="186" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1599577673363" />
+    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup" timestamp="1599579801598">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1597813172194" />
-    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1598689991431" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Warhammer_IA$Warhammer_IA.coverage" NAME="Warhammer-IA Coverage Results" MODIFIED="1598701184231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Warhammer_IA$main.coverage" NAME="Warhammer-IA Coverage Results" MODIFIED="1597825997938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599579801598" />
   </component>
 </project>

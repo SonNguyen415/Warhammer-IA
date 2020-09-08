@@ -9,11 +9,15 @@ def one():
 def two():
     return "two"
 
+def three():
+    return "three"
+
 
 switcher = {
     0: zero,
     1: one,
-    2: two
+    2: two,
+    3: three,
 }
 
 
@@ -23,5 +27,4 @@ def numbers_to_strings(argument):
     # Execute the function
     return func()
 
-
-print(numbers_to_strings(2))
+print(numbers_to_strings(3))

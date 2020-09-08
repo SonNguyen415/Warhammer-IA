@@ -1,0 +1,13 @@
+The enemy forces lie dead as a platoon of 34 Guardsmen arrives to help you.
+He recognizes you as an elite Karskin of the Cadian Shock Troopers.
+
+	'Karskin.' He greets your salute. He motioned for you to be at ease and begin to question you on your current directive.
+You told him that it was your squad’s original mission to clear a jammer located in a tower southeast of here.
+Unfortunately, it was ambushed midway, leaving you as the only survivor.
+
+'I see. I am Second Lieutenant Daidh Kraftwerk of the 56th Cadian.
+My unit and I were ordered to reach this location as a vanguard unit,
+clearing ways for the rest of my battalion, but as I reached this place our Vox was jammed and contact was lost,'
+the Lieutenant said, frowning, 'It will be a good idea to clear that jamming signal then before we do anything else.
+You are with us now Karskin.'(Type in the number of the choice)
+
