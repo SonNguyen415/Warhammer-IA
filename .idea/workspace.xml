@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43f99a95-1276-4620-a690-22fb5dd24231" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/switcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Warhammer-IA.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Warhammer-IA.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="JupyterTrust" id="008ccf06-560f-4354-b43b-6084f3b957e8" />
+  <component name="JupyterTrust" id="3c55f449-25ca-47cd-8a89-948dd85e1192" />
   <component name="ProjectId" id="1gH98b3zS1dljPxMgwfxCd07O3P" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -81,6 +76,7 @@
       <workItem from="1597979845297" duration="382000" />
       <workItem from="1598687297398" duration="2321000" />
       <workItem from="1598689754905" duration="4149000" />
+      <workItem from="1599102320324" duration="432000" />
     </task>
     <servers />
   </component>
