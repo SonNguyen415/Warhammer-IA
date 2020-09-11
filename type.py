@@ -10,6 +10,13 @@ def delay_print(text):
         sys.stdout.flush()
         time.sleep(0.02)
 
+        
+def print_intro():
+    gameIntro = open('text/intro.txt', 'r')
+    introContent = gameIntro.read()
+    delay_print(introContent)
+    gameIntro.close()
 
+    
 def start_menu():
     print(' ')
