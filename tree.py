@@ -1,5 +1,6 @@
 from content import *
 from random import *
+from type import * 
 
 class TreeNode(object):
     def __init__(self, data):
@@ -32,9 +33,8 @@ class TreeNode(object):
                 print(spaces + child.data)
             choice = int(input('Select your choices: '))
             chosen = self.children[choice-1]
-            print(chosen.data)
+            delay_print(chosen.data)
             nextScene = chosen.get_next_scene()
-            print(nextScene.data)
             nextScene.tree_travel()
         else:
             return
