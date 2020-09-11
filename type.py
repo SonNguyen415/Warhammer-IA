@@ -1,7 +1,12 @@
 import time
 import sys
+import sqlite3 as sq
+
 from content import *
 
+# identify location of database, courtesy of Monika Richardson
+con = sq.connect("")
+c = con.cursor()
 
 def delay_print(text):
     # Code courtesy of stackOverflow
