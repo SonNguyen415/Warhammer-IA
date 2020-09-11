@@ -21,8 +21,17 @@ def print_intro():
     print(" ")
     time.sleep(0.1)
     gameIntro.close()
+    
+def insert_character(characterName, Rank, charID):
+    """
+    Inserting the novel into the database
+    """
+    insertion = ('INSERT INTO Character (Name, Rank, charID) Values ("' + str(characterName) + '", "' + Rank + '", ' + str(charId) + ', ' + str(aID) + ')');
+    sql = c.execute(insertion)
+    
 
 def welcome():
     delay_print("Welcolme to Warhammer 40k. The grim dark future of humanity is at hand. Survival is your objective. We will begin with character creation.")
     name = input("Enter a name: ")
+ 
     
