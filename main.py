@@ -1,10 +1,6 @@
-from switcher import *
-from type import *
-
-def print_intro():
-    gameIntro = open('text/intro.txt', 'r')
-    introContent = gameIntro.read()
-    delay_print(introContent)
-    gameIntro.close()
+from tree import *
 
 
+print_intro()
+myTree = build_product_tree()
+myTree.tree_travel()
