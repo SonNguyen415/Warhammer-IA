@@ -62,5 +62,4 @@ def build_product_tree():
     return root
 
 
-myTree = build_product_tree()
-myTree.tree_travel()
+
