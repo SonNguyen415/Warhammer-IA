@@ -1,6 +1,7 @@
 from content import *
 from random import *
 from type import * 
+from switcher import *
 
 class TreeNode(object):
     def __init__(self, data):
