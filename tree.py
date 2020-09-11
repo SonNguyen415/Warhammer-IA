@@ -41,23 +41,23 @@ class TreeNode(object):
 
 def build_product_tree():
 
-    root = TreeNode(S1Acontent)
+    root = TreeNode(S01content)
 
-    nC1A = TreeNode(C1Acontent)
-    nC1B = TreeNode(C1Bcontent)
+    nCA1 = TreeNode(CA1content)
+    nCA2 = TreeNode(CA2content)
 
-    nS2A = TreeNode(S2Acontent)
-    nS2B = TreeNode(S2Bcontent)
-    nS2C = TreeNode(S2Ccontent)
-    nS2D = TreeNode(S2Dcontent)
+    nSA1 = TreeNode(SA1content)
+    nSA2 = TreeNode(SA2content)
+    nSA3 = TreeNode(SA3content)
+    nSA4 = TreeNode(SA4content)
 
-    root.add_child(nC1A)
-    root.add_child(nC1B)
+    root.add_child(nCA1)
+    root.add_child(nCA2)
 
-    nC1A.add_child(nS2A)
-    nC1A.add_child(nS2B)
-    nC1B.add_child(nS2C)
-    nC1B.add_child(nS2D)
+    nCA1.add_child(nSA1)
+    nCA1.add_child(nSA2)
+    nCA2.add_child(nSA3)
+    nCA2.add_child(nSA4)
 
     return root
 
