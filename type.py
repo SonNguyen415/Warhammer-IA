@@ -12,8 +12,8 @@ def delay_print(text):
         
 def print_intro():
     delay_print(introContent)
+    print(' ')
+    time.sleep(0.1)
     gameIntro.close()
 
-    
-def start_menu():
-    print(' ')
+
