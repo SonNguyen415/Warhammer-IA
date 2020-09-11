@@ -1,6 +1,6 @@
 import time
 import sys
-
+from content import *
 
 def delay_print(text):
     # Code courtesy of stackOverflow
@@ -11,8 +11,6 @@ def delay_print(text):
 
         
 def print_intro():
-    gameIntro = open('text/intro.txt', 'r')
-    introContent = gameIntro.read()
     delay_print(introContent)
     gameIntro.close()
 
