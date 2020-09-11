@@ -2,6 +2,7 @@ import time
 import sys
 from content import *
 
+
 def delay_print(text):
     # Code courtesy of stackOverflow
     for w in text:
@@ -12,8 +13,11 @@ def delay_print(text):
         
 def print_intro():
     delay_print(introContent)
-    print(' ')
+    print(" ")
     time.sleep(0.1)
     gameIntro.close()
 
-
+def welcome():
+    delay_print("Welcolme to Warhammer 40k. The grim dark future of humanity is at hand. Survival is your objective. We will begin with character creation.")
+    name = input("Enter a name: ")
+    
