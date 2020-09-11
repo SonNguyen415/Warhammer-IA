@@ -1,4 +1,3 @@
-from content import *
 from random import *
 from type import * 
 from switcher import *
