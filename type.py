@@ -2,7 +2,6 @@ import time
 import sys
 
 
-
 def delay_print(text):
     # Code courtesy of stackOverflow
     for w in text:
