@@ -3,16 +3,20 @@ from type import *
 from switcher import *
 
 
+# Tree object for game story
+# Initialization and add_child courtesy of codebasics
 class TreeNode(object):
     def __init__(self, data):
         self.data = data
         self.children = []
         self.parent = None
 
+    # Add a child to a parent node
     def add_child(self, child):
         child.parent = self
         self.children.append(child)
 
+    # Get the level of the node, root is 1
     def get_level(self):
         level = 1
         p = self.parent
@@ -21,10 +25,12 @@ class TreeNode(object):
             p = p.parent
         return level
 
+    # Get the next scene from the choices, calculated based on character ability
     def get_next_scene(self):
         n = randint(0, len(self.children)-1)
         return self.children[n]
 
+    # Travel to the next scene and display it and the choices available
     def tree_travel(self):
         if self.children:
             skip_line(2)
@@ -40,6 +46,7 @@ class TreeNode(object):
             return
 
 
+# Create tree, function setup courtesy of codebasics         
 def build_product_tree():
 
     root = TreeNode(S01content)
