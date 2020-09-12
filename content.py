@@ -1,4 +1,6 @@
-intro = open('text/intro.txt', 'r')
+# Open text files and set the content as the string read from the files
+
+intro = open('text/intro.txt', 'r') 
 introContent = intro.read()
 
 CA1 = open('text/CA1.txt', 'r')
