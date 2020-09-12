@@ -26,12 +26,11 @@ class TreeNode(object):
         return self.children[n]
 
     def tree_travel(self):
-        spaces = "  "
         if self.children:
             skip_line(2)
             print(self.data)
             for child in self.children:
-                print(spaces + child.data)
+                print(indent(2) + child.data)
             choice = int(input('Select your choices: '))
             chosen = self.children[choice-1]
             delay_print(chosen.data)
