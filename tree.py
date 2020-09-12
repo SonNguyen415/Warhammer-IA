@@ -2,6 +2,7 @@ from random import *
 from type import * 
 from switcher import *
 
+
 class TreeNode(object):
     def __init__(self, data):
         self.data = data
@@ -24,10 +25,10 @@ class TreeNode(object):
         n = randint(0, len(self.children)-1)
         return self.children[n]
 
-
     def tree_travel(self):
         spaces = "  "
         if self.children:
+            skip_line(2)
             print(self.data)
             for child in self.children:
                 print(spaces + child.data)
@@ -38,6 +39,7 @@ class TreeNode(object):
             nextScene.tree_travel()
         else:
             return
+
 
 def build_product_tree():
 

@@ -26,5 +26,3 @@ def numbers_to_strings(argument):
     func = switcher.get(argument, "nothing")
     # Execute the function
     return func()
-
-print(numbers_to_strings(3))
