@@ -3,6 +3,8 @@ from type import *
 from switcher import *
 
 
+# Tree object for game story
+# Initialization and add_child courtesy of codebasics
 class TreeNode(object):
     def __init__(self, data):
         self.data = data
