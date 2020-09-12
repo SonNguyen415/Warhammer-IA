@@ -1,23 +1,23 @@
 intro = open('text/intro.txt', 'r')
 introContent = intro.read()
 
-C1A = open('text/C1A.txt', 'r')
-C1Acontent = C1A.read()
+CA1 = open('text/CA1.txt', 'r')
+CA1content = CA1.read()
 
-C1B = open('text/C1B.txt', 'r')
-C1Bcontent = C1B.read()
+CA2 = open('text/CA2.txt', 'r')
+CA2content = CA2.read()
 
-S1A = open('text/S1A.txt', 'r')
-S1Acontent = S1A.read()
+S01 = open('text/S01.txt', 'r')
+S01content = S01.read()
 
-S2A = open('text/S2A.txt', 'r')
-S2Acontent = S2A.read()
+SA1 = open('text/SA1.txt', 'r')
+SA1content = SA1.read()
 
-S2B = open('text/S2B.txt', 'r')
-S2Bcontent = S2B.read()
+SA2 = open('text/SA2.txt', 'r')
+SA2content = SA2.read()
 
-S2C = open('text/S2C.txt', 'r')
-S2Ccontent = S2C.read()
+SA3 = open('text/SA3.txt', 'r')
+SA3content = SA3.read()
 
-S2D = open('text/S2D.txt', 'r')
-S2Dcontent = S2D.read()
+SA4 = open('text/SA4.txt', 'r')
+SA4content = SA4.read()
