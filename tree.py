@@ -25,22 +25,22 @@ class TreeNode(object):
             p = p.parent
         return level
 
-    # Get the next scene from the choices, calculated based on character ability
+    # Get the next scene from the choices, calculated based on character ability. Current status: complete random.
     def get_next_scene(self):
         n = randint(0, len(self.children)-1)
         return self.children[n]
 
-    # Travel to the next scene and display it and the choices available
+    # Travel to the next scene and display it and the choices available. Get the next scene based on chosen choice
     def tree_travel(self):
         if self.children:
             skip_line(2)
             print(self.data)
             for child in self.children:
                 print(indent(2) + child.data)
-            choice = int(input('Select your choices: '))
-            chosen = self.children[choice-1]
-            delay_print(chosen.data)
-            nextScene = chosen.get_next_scene()
+            choiceIndex = int(input('Select your choices: '))
+            playerChoice = self.children[choiceIndex-1]
+            delay_print(playerChoice.data)
+            nextScene = playerChoice.get_next_scene()
             nextScene.tree_travel()
         else:
             return
