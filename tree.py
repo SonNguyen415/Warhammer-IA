@@ -29,6 +29,15 @@ class TreeNode(object):
     def get_next_scene(self):
         n = randint(0, len(self.children)-1)
         return self.children[n]
+    
+    #Generate an event outside the plot itself
+    def get_event(self):
+        print("yes") #Print event & choices then change char stats based on it
+    
+    #Check if an event can be generated:
+    def check_event(self):
+        return False
+    
 
     # Travel to the next scene and display it and the choices available. Get the next scene based on chosen choice
     def tree_travel(self):
@@ -40,7 +49,10 @@ class TreeNode(object):
             choiceIndex = int(input('Select your choices: '))
             playerChoice = self.children[choiceIndex-1]
             delay_print(playerChoice.data)
-            nextScene = playerChoice.get_next_scene()
+            if check_event():
+                get_event()
+            else:
+                nextScene = playerChoice.get_next_scene()
             nextScene.tree_travel()
         else:
             return
