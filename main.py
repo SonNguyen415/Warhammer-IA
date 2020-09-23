@@ -1,7 +1,7 @@
-from tree import *
+from story import *
 
 # Make the game
-print_intro()
+# print_intro()
 render_menu()
-myTree = build_product_tree()
-myTree.tree_travel()
+# myTree = build_product_tree()
+# myTree.tree_travel()
