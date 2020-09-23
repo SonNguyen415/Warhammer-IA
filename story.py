@@ -1,5 +1,4 @@
-from type import *
-from switcher import *
+from weapons import *
 
 
 def get_event():
