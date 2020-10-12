@@ -1,4 +1,4 @@
-from weapons import *
+from menu import *
 
 
 def get_event():
@@ -61,4 +61,5 @@ def progress():
         get_next_scene(choiceID)
         progress()
     else:
-        print("Game Over")
+        print("Game Over!")
+        render_menu()
