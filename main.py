@@ -1,6 +1,7 @@
 from story import *
 
+
 # Make the game
 # print_intro()
-# render_menu()
-# progress()
+render_menu()
+progress()
