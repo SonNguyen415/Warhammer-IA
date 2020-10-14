@@ -2,7 +2,8 @@ from dataFetching import *
 
 
 class Characters(object):
-    def __init__(self, name, level, strength, endurance, durability, agility, accuracy, inventoryCap, freePoints):
+    def __init__(self, charID, name, level, strength, endurance, durability, agility, accuracy, inventoryCap, freePoints):
+        self.charID = charID
         self.name = name
         self.level = level
         self.data = [strength, endurance, durability, agility, accuracy, inventoryCap]
@@ -44,15 +45,17 @@ class Characters(object):
                 return
 
     def show_stats(self):
-        print(self.name)
+        print("Name: " + self.name)
+        skip_line(1)
         for i, attr in enumerate(BASE_STATS[0]):
             print(attr + ": " + str(self.data[i]) + "\n")
 
 
 class Weapon(object):
-    def __init__(self, quality, name="No Name"):
-        self.name = name
+    def __init__(self, wID, quality, typeID):
+        self.wID = wID
         self.quality = quality
+        self.typeID = typeID
 
     def maintain_weapon(self):
         self.quality += 1

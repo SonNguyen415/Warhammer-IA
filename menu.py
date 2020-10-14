@@ -1,34 +1,5 @@
-import time
-import sys
 from objects import *
 import string
-
-# Indent for aesthetic and readability
-def indent(space):
-    return " " * space
-
-
-# Print one word at a time per sentence.
-def delay_print(text):
-    # Code courtesy of stackOverflow
-    for w in text:
-        sys.stdout.write(w)
-        sys.stdout.flush()
-        time.sleep(TIME_STOP)
-
-
-# Skipping lines
-def skip_line(line):
-    for i in range(0, line):
-        print(" ")
-
-
-# Print the intro and wait 2 seconds
-def print_intro():
-    # delay_print(introContent)
-    print("Yes")
-    time.sleep(2)
-    intro.close()
 
 
 def show_character_list():
@@ -58,37 +29,40 @@ def show_character(charID):
         print(attr + ": " + str(cData[i]))
 
 
+def add_weapons(wID, quality, typeID):
+    Weapon1 = Weapon(wID, quality, typeID)
+    return
+
+
 def customize_character(pt):
     skip_line(1)
     Player.show_stats()
     skip_line(1)
     print("You have " + str(pt) + " starting points, spend them wisely. \n")
     weapon = input("You have been provided with a lasgun. Enter w to view your weapon. Any other button to skip: ")
-    skip_line(2)
+    skip_line(3)
     if weapon.lower() == "w":
         show_weapon_data("Lasgun")
     print("No additional weapon is available at level 1, you may purchase more upon ascension. \n")
     dist = input("Enter d to distribute points. Enter any other button to skip and save for later: ")
-    skip_line(1)
-    print("You may input 0 if you don't wish to add points. Warning, undoing choices is not possible. You have " +
+    skip_line(3)
+    print("You may input 0 if you don't wish to add points. Warning: undoing choices is not possible. You have " +
           str(pt) + " points.\n")
-    skip_line(1)
     if dist.lower() == "d":
         Player.customize()
     skip_line(1)
     Player.show_stats()
 
 
-# Load new game screena
+# Load new game screen
 def new_game():
     skip_line(5)
-    global currChar
     global Player
-    currChar = get_id()
-    if currChar == 0:
+    charID = get_id(0)
+    if charID == 0:
         print("You have too many saves. You must delete some.")
         delete_saves()
-    name = input("Enter a name. Enter no letter to return to menu: ")
+    name = input("Enter a name. Inputs with no letter will return to menu: ")
     count = 0
     for letter in list(string.ascii_lowercase):
         if letter not in name.lower():
@@ -96,21 +70,24 @@ def new_game():
     if count >= 26:
         render_menu()
         return
-    Player = Characters(name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
+    Player = Characters(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
                         BASE_STATS[1][4], BASE_STATS[1][5], START_PTS)
     Player.fill_inventory(1, 1)
+    add_weapons(get_id(1), get_weapon_quality(1), 1)
     customize_character(START_PTS)
 
 
 # Allow loading game and change the current characterID
 def load_game():
-    global currCHAR
     global currScene
+    global Player
     show_character_list()
     try:
-        currCHAR = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
-        currScene = get_curr_progress(currCHAR)
-
+        charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
+        currScene = get_curr_progress(charID)
+        cData = get_character_data(charID)
+        Player = Characters(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
+                            cData[9])
         return
     except ValueError:
         render_menu()
@@ -127,20 +104,24 @@ def delete_saves():
             render_menu()
 
 
-def exit_game():
-    sys.exit(0)
-
-
 def save_game():
     error = True
     while error:
         insurance = input("Are you sure you want to save the game (Y/N)?")
         if insurance.lower() == "y":
-            insert_character(Player.name, Player.level, Player.data, Player.freePoints)
+            if not_in_database(Player.charID):
+                insert_character(Player.charID, Player.name, Player.level, Player.data, Player.freePoints)
+            else:
+                update_character(Player.charID, Player.level, Player.data, Player.freePoints)
+
             return
         elif insurance.lower() == "n":
             error = False
             render_options()
+
+
+def exit_game():
+    sys.exit(0)
 
 
 # Load all the options a player can have in the menu
@@ -153,7 +134,7 @@ def load_menu():
     elif userOption.lower() == "delete saves":
         delete_saves()
     elif userOption.lower() == "exit game":
-        exit_game(0)
+        exit_game()
     else:
         load_menu()
 

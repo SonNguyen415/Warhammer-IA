@@ -44,7 +44,7 @@ def check_child():
     return data[0][0] > 0
 
 
-def progress():
+def play_game():
     global currScene
     if check_event():
         get_event()
@@ -58,7 +58,7 @@ def progress():
         try:
             choiceID = delay_print(int(input('Type in the number of your choice, type in letters to open options: ')))
             get_next_scene(choiceID)
-            progress()
+            play_game()
         except ValueError:
             render_options()
     else:
