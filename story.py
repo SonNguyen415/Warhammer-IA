@@ -1,4 +1,4 @@
-from weapons import *
+from menu import *
 
 
 def get_event():
@@ -16,7 +16,6 @@ def get_scene():
 
 
 def get_choices():
-    global currScene
     sql = c.execute('SELECT TextContent FROM Storyline WHERE TextPointer = ' + str(currScene))
     data = c.fetchall()
     return data
@@ -27,7 +26,6 @@ def scene_calc():
 
 
 def confirm_choice(cID):
-    global currScene
     sql = c.execute('SELECT TextID FROM Storyline WHERE TextType = ' + str(cID) + ' and TextPointer = ' + str(currScene))
     data = c.fetchall()
     return data[0][0]
@@ -41,13 +39,12 @@ def get_next_scene(cID):
 
 
 def check_child():
-    global currScene
     sql = c.execute('SELECT Children FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
     return data[0][0] > 0
 
 
-def progress():
+def play_game():
     global currScene
     if check_event():
         get_event()
@@ -57,8 +54,13 @@ def progress():
         skip_line(1)
         for i in range(0, len(get_choices())):
             print(get_choices()[i][0])
-        choiceID = delay_print(input('Select your choices: '))
-        get_next_scene(choiceID)
-        progress()
+        skip_line(1)
+        try:
+            choiceID = delay_print(int(input('Type in the number of your choice, type in letters to open options: ')))
+            get_next_scene(choiceID)
+            play_game()
+        except ValueError:
+            render_options()
     else:
-        print("Game Over")
+        print("Game Over!")
+        render_menu()
