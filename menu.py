@@ -2,6 +2,7 @@ from objects import *
 import string
 
 
+# Display a list of all characters saved in database
 def show_character_list():
     charList = get_character_list()
     skip_line(1)
@@ -17,23 +18,27 @@ def show_character_list():
     skip_line(1)
 
 
+# Show the stats of a given weapon
 def show_weapon_data(weapon):
     wData = get_weapon_data(weapon)
     for attr in wData:
         print(attr)
 
 
+# Show stats of a given character
 def show_character(charID):
     cData = get_character_data(charID)
     for i, attr in enumerate(BASE_STATS[0]):
         print(attr + ": " + str(cData[i]))
 
-
+        
+# Add weapons
 def add_weapons(wID, quality, typeID):
     Weapon1 = Weapon(wID, quality, typeID)
     return
 
 
+# Begin customization process
 def customize_character(pt):
     skip_line(1)
     Player.show_stats()
@@ -93,6 +98,7 @@ def load_game():
         render_menu()
 
 
+# Delete a character from database and the weapons he owns
 def delete_saves():
     show_character_list()
     while True:
@@ -104,6 +110,7 @@ def delete_saves():
             render_menu()
 
 
+# Save current character and weapons to database
 def save_game():
     error = True
     while error:
@@ -120,6 +127,7 @@ def save_game():
             render_options()
 
 
+# Close console and exit the game
 def exit_game():
     sys.exit(0)
 
@@ -139,6 +147,7 @@ def load_menu():
         load_menu()
 
 
+# Load the options, you can save, resume, exit, and customize your character
 def load_options():
     userOption = input("Choose your options: ")
     if userOption.lower() == "resume game":
@@ -163,7 +172,8 @@ def render_menu():
     load_menu()
     skip_line(10)
 
-
+    
+# Display the options menu screen
 def render_options():
     skip_line(4)
     print("Option Menu \n")
