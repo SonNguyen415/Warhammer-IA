@@ -44,7 +44,7 @@ def check_child():
     return data[0][0] > 0
 
 
-def play_game():
+def game_progress():
     global currScene
     if check_event():
         get_event()
@@ -56,11 +56,21 @@ def play_game():
             print(get_choices()[i][0])
         skip_line(1)
         try:
-            choiceID = delay_print(int(input('Type in the number of your choice, type in letters to open options: ')))
+            choiceID = delay_print(int(input('Type in the number of your choice to progress, ' +
+                                             'type in letters to open options: ')))
             get_next_scene(choiceID)
-            play_game()
+            game_progress()
         except ValueError:
             render_options()
     else:
         print("Game Over!")
         render_menu()
+
+
+def start_game():
+    skip_line(1)
+    while True:
+        start = input("Type start to begin: ")
+        if start == "start":
+            return
+
