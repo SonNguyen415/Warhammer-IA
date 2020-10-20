@@ -13,7 +13,8 @@ class Characters(object):
 
     # Fill the inventory with the data of the selected weapon
     def fill_inventory(self, weaponID, typeID):
-        newWeapon = [weaponID, typeID]
+        quality = 5
+        newWeapon = Weapon(weaponID, quality, typeID)
         self.weaponList.append(newWeapon)
         self.freeInventory -= get_weapon_size(weaponID)
 
