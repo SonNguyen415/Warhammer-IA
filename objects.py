@@ -11,18 +11,22 @@ class Characters(object):
         self.freeInventory = inventoryCap
         self.weaponList = []
 
+    # Fill the inventory with the data of the selected weapon
     def fill_inventory(self, weaponID, typeID):
         newWeapon = [weaponID, typeID]
         self.weaponList.append(newWeapon)
         self.freeInventory -= get_weapon_size(weaponID)
 
+    # Level up the character
     def ascend(self):
         self.level += 1
         self.freePoints += ASC_POINTS
 
+    # Change stats of a given attribute
     def change_stats(self, val, x):
         self.data[x] += val
 
+    # Customize your character
     def customize(self):
         print("Customizing your character, you may exit at any moment by inputting a non integer.")
         pt = self.freePoints
@@ -44,6 +48,7 @@ class Characters(object):
             except ValueError:
                 return
 
+    # Show character stats
     def show_stats(self):
         print("Name: " + self.name)
         skip_line(1)
@@ -56,9 +61,22 @@ class Weapon(object):
         self.wID = wID
         self.quality = quality
         self.typeID = typeID
+    
+    # Get the maximum possible quality of the current weapon
+    def get_max_quality(self):
+        return 1
 
+    # Improve weapon quality each time you maintain it
     def maintain_weapon(self):
         self.quality += 1
+        if self.quality >= self.get_max_quality():
+            print("You've maximized the reliability of this weapon.")
+            self.quality = self.get_max_quality()
 
+    # Damage the weapons due to use
     def damage_weapon(self):
-        self.quality -= 1
+        self.quality -= 2
+        if self.quality <= 0:
+            print("This weapon is now broken.")
+            self.quality = 0
+   
