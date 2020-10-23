@@ -124,6 +124,7 @@ def exit_game():
     sys.exit(0)
 
 
+# Show player stats and give option to edit it
 def view_character():
     Player.show_stats()
     print(indent(2) + "Resume Game \n")
