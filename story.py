@@ -1,6 +1,7 @@
 from menu import *
 
 
+# Game ending results in either restart or exit
 def end_game():
     print("Game Over!")
     time.sleep(1)
@@ -11,7 +12,8 @@ def end_game():
     except ValueError:
         exit_game()
 
-
+        
+# Check the minimum success based on comparison between attacker and defender score
 def check_success(attacker, defender):
     if attacker > 2 * defender:
         return 1
@@ -28,43 +30,43 @@ def check_success(attacker, defender):
     else:
         return 7
 
-
-def get_event_id():
+# Get the event of the current scene
+def get_event():
     sql = c.execute('SELECT StoryEvent FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
     return data
 
 
-def check_event():
-    has_event = get_event_id()
-    return not has_event
-
-
+# Get the difficulty level of the event
 def get_difficulty():
-    eventID = get_event_id()
-    sql = c.execute('SELECT Difficulty FROM Events WHERE EventID = ' + str(eventID))
+    eventID = get_event()
+    sql = c.execute('SELECT Difficulty FROM Events WHERE EventID = ' + str(eventID[0][0]))
     difficulty = c.fetchall()
     return difficulty[0][0]
 
 
+# Get the scene content of the current node
 def get_node(nodeID):
     sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodeID = ' + str(nodeID))
     data = c.fetchall()
     return data[0][0]
 
 
+# Check if the node has children leading from it, if not, then event has ended.
 def check_node_child(nodeID):
     sql = c.execute('SELECT Children FROM EventNode WHERE NodeID = ' + str(nodeID))
     data = c.fetchall()
     return data[0][0]
 
 
+# Get the content of the choices you can make for the event
 def get_event_choices(pointer):
     sql = c.execute('SELECT NodeContent FROM EventNode WHERE TextPointer = ' + str(pointer))
     data = c.fetchall()
     return data
 
 
+# Confirm that the selected choice is correct
 def confirm_event_choice(choiceID):
     sql = c.execute('SELECT TextID FROM EventNode WHERE NodePointer  = ' + str(choiceID))
     data = c.fetchall()
@@ -75,6 +77,7 @@ def auto_resolve(enemyData, difficulty, survivalChance):
     return
 
 
+# Show all stats
 def show_stats():
     wView = input("Enter w to view weapon stats, any other button to skip: ")
     if wView.lower() == "w":
@@ -84,6 +87,7 @@ def show_stats():
         Player.show_stats()
 
 
+# Get the data of the chosen weapons
 def get_chosen_weapon_data():
     wChoice = int(input("Select your weapon: "))
     weaponData = get_weapon_data(wChoice)
@@ -290,7 +294,7 @@ def check_story_child():
 def game_progress():
     global currScene
     pause = True
-    if not check_event():
+    if not get_event():
         nodeID = 1
         play_event(nodeID)
     skip_line(4)
