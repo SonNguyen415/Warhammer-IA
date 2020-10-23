@@ -8,6 +8,7 @@ class Weapon(object):
         self.maxQuality = get_weapon_quality(typeID)
         self.quality = self.maxQuality
         self.size = get_weapon_size(typeID)
+        self.weaponType = weaponType
 
     # Improve weapon quality each time you maintain it
     def maintain_weapon(self):
@@ -24,8 +25,9 @@ class Weapon(object):
             self.quality = 0
 
     # Show weapon data
-    def show_weapon(self):
-        print(self.typeID)
+    def display_weapon(self):
+        print(("Weapon ID: " + str(self.typeID), "Weapon Quality: " + str(self.quality), "Weapon Type: " +
+                                                                          self.weaponType))
 
 
 class Character(object):
@@ -69,11 +71,15 @@ class Character(object):
 
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
-        print(self.usedInventory)
+        for weapon in self.usedInventory:
+            weapon.display_weapon()
+        skip_line(2)
+        time.sleep(WAIT_TIME)
         for weapon in self.usedInventory:
             show_weapon_data(weapon.typeID)
             skip_line(1)
         skip_line(1)
+        time.sleep(WAIT_TIME)
 
     # Level up the character if possible
     def ascend(self):
@@ -111,15 +117,14 @@ class Character(object):
         skip_line(1)
         print("Level: " + str(self.level))
         print("Exp: " + str(self.exp))
+        print("Corruption: " + str(self.corruption))
+        print("Stress: " + str(self.stress))
         skip_line(1)
         for i, attr in enumerate(BASE_STATS[0]):
             print(attr + ": " + str(self.data[i]))
         skip_line(1)
-        print("Corruption: " + str(self.corruption))
-        print("Stress: " + str(self.stress))
-        skip_line(1)
         print("Free points to distribute: " + str(self.freePoints))
-        time.sleep(TIME_WAIT)
+        time.sleep(WAIT_TIME)
         skip_line(2)
 
     # Update the character

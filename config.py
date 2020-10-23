@@ -5,6 +5,7 @@ import math
 import random
 import string
 
+
 # identify location of database, courtesy of Monika Richardson
 con = sq.connect("database/vilinius.db")
 c = con.cursor()
@@ -13,10 +14,13 @@ currScene = 1
 Player = object
 CurrEnemy = object
 
+
+STORY = 0
+EVENT = 1
 LASGUN_ID = 1
 MAX_EXP = 100
-TIME_STOP = 0
-TIME_WAIT = 3
+STOP_TIME = 0
+WAIT_TIME = 0
 START_PTS = 5
 ASC_POINTS = 5
 BASE_STATS = [["Health", "Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
@@ -38,7 +42,7 @@ def delay_print(text):
     for w in text:
         sys.stdout.write(w)
         sys.stdout.flush()
-        time.sleep(TIME_STOP)
+        time.sleep(STOP_TIME)
 
 
 # Skipping lines

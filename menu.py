@@ -26,7 +26,7 @@ def customize_character(pt):
     weapon = input("You have been provided with a lasgun. Enter w to view your weapon. Any other button to skip: ")
     skip_line(3)
     if weapon.lower() == "w":
-        Player.show_weapon_data(LASGUN_ID)
+        Player.show_inventory()
     skip_line(1)
     print("No additional weapon is available at level 1, you may purchase more upon ascension. \n")
     dist = input("Enter d to distribute points. Enter any other button to skip and save for later: ")
@@ -84,12 +84,10 @@ def load_game():
     try:
         charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
         cData = get_character_data(charID)
-        Player.show_stats()
         Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
                            cData[9], cData[10], cData[11], cData[12], cData[13])
-
+        Player.show_stats()
         currScene = get_curr_progress(charID)
-        return
     except ValueError:
         render_menu()
 
@@ -174,7 +172,7 @@ def render_menu():
     print(indent(2) + "Delete Saves \n")
     print(indent(2) + "Exit Game \n")
     load_menu()
-    skip_line(10)
+    skip_line(2)
 
 
 # Display the options menu screen

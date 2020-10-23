@@ -11,7 +11,7 @@ def end_game():
     except ValueError:
         exit_game()
 
-        
+
 # Check the minimum success based on comparison between attacker and defender score
 def check_success(attacker, defender):
     if attacker > 2 * defender:
@@ -29,47 +29,107 @@ def check_success(attacker, defender):
     else:
         return 7
 
+
 # Get the event of the current scene
-def get_event():
-    sql = c.execute('SELECT StoryEvent FROM Storyline WHERE TextID = ' + str(currScene))
+def get_event(choiceID):
+    sql = c.execute('SELECT StoryEvent FROM Storyline WHERE TextID = ' + str(choiceID))
     data = c.fetchall()
-    return data
+    return data[0][0]
+
+
+# Check you can run an event
+def event_exists(choiceID):
+    event = get_event(choiceID)
+    sql = c.execute('SELECT EventID FROM Event')
+    data = c.fetchall()
+    for val in data:
+        if val[0] == event:
+            return True
+    return False
 
 
 # Get the difficulty level of the event
 def get_difficulty():
     eventID = get_event()
-    sql = c.execute('SELECT Difficulty FROM Events WHERE EventID = ' + str(eventID[0][0]))
+    sql = c.execute('SELECT Difficulty FROM Events WHERE EventID = ' + str(eventID))
     difficulty = c.fetchall()
     return difficulty[0][0]
 
 
 # Get the scene content of the current node
-def get_node(nodeID):
-    sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodeID = ' + str(nodeID))
+def get_scene_content(sceneType, nodeID=0):
+    if sceneType == EVENT:
+        sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodeID = ' + str(nodeID))
+    else:
+        sql = c.execute('SELECT TextContent FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
     return data[0][0]
 
 
-# Check if the node has children leading from it, if not, then event has ended.
-def check_node_child(nodeID):
-    sql = c.execute('SELECT Children FROM EventNode WHERE NodeID = ' + str(nodeID))
+# Check if the node has children leading from it, event or game will end if scene has no child
+def check_child(sceneType, nodeID=0):
+    if sceneType == EVENT:
+        sql = c.execute('SELECT Children FROM EventNode WHERE NodeID = ' + str(nodeID))
+    else:
+        sql = c.execute('SELECT Children FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
     return data[0][0]
 
 
 # Get the content of the choices you can make for the event
-def get_event_choices(pointer):
-    sql = c.execute('SELECT NodeContent FROM EventNode WHERE TextPointer = ' + str(pointer))
+def get_choices(sceneType, pointer=0):
+    if sceneType == STORY:
+        sql = c.execute('SELECT TextContent FROM Storyline WHERE TextPointer = ' + str(currScene))
+    else:
+        sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodePointer = ' + str(pointer))
     data = c.fetchall()
     return data
 
 
-# Confirm that the selected choice is correct
-def confirm_event_choice(choiceID):
-    sql = c.execute('SELECT TextID FROM EventNode WHERE NodePointer  = ' + str(choiceID))
+# Confirm that the choice selected is valid
+def confirm_choice(sceneType, cID):
+    if sceneType == STORY:
+        sql = c.execute('SELECT TextID FROM Storyline WHERE TextType  = ' + str(cID) +
+                        ' AND TextPointer = ' + str(currScene))
+    else:
+        sql = c.execute('SELECT NodeID FROM EventNode WHERE NodePointer  = ' + str(cID))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the list of scenes that can follow due to the choice selected
+def scene_list(sceneType, choiceID):
+    if sceneType == STORY:
+        sql = c.execute('SELECT TextID FROM Storyline WHERE TextPointer = ' + str(choiceID))
+    else:
+        sql = c.execute('SELECT NodeID FROM EventNode WHERE NodePointer = ' + str(choiceID))
     data = c.fetchall()
     return data
+
+
+# Calculating which scene will follow based on the scene chance
+def scene_calc(sceneList):
+    arr = []
+    for lst in sceneList:
+        arr.append(lst[0])
+    ran = random.randint(0, 100)
+    abs_diff = lambda list_value: abs(list_value - ran)
+    nextScene = min(arr, key=abs_diff)
+    return nextScene
+
+
+# Get the next scene
+def get_next_scene(sceneType, choiceID):
+    global currScene
+    sceneList = scene_list(sceneType, choiceID)
+    nextScene = scene_calc(sceneList)
+    if sceneType == STORY:
+        sql = c.execute('SELECT TextID FROM Storyline WHERE TextID = ' + str(nextScene))
+        data = c.fetchall()
+        currScene = data[0][0]
+    else:
+        print("Stop here for now")
+        exit_game()
 
 
 # Auto resolving the fight event, randomized and based on stats
@@ -109,7 +169,7 @@ def player_melee(difficulty, survivalChance):
         CurrEnemy.reduce_durability(damage)
 
 
- # Player turn to fight, what they can do depends on the phase
+# Player turn to fight, what they can do depends on the phase
 def player_turn(phase, difficulty, survivalChance, distance):
     global Player
     global currEnemy
@@ -218,31 +278,27 @@ def combat_calc(choiceID):
         manual_fight(difficulty, survivalChance)
 
 
-# Get the next node of the event
-def get_next_node(choiceID, currNode):
-    return
-
-
 # Begin the event
 def play_event(nodeID):
     pause = True
     skip_line(2)
-    delay_print(get_node(nodeID))
-    if check_node_child(nodeID):
+    delay_print(get_scene_content(EVENT, nodeID))
+    if check_child(EVENT, nodeID):
         while pause:
             skip_line(2)
-            for choice in get_event_choices(nodeID):
+            for choice in get_choices(EVENT, nodeID):
                 print(choice[0])
             skip_line(1)
             try:
                 choiceID = int(input('Type in the number of your choice to progress, ' +
                                      'type in any letter to open options: '))
-                choiceResult = confirm_event_choice(choiceID)
+                choiceResult = confirm_choice(EVENT, choiceID)
                 while not choiceResult:
                     choiceID = int(input('Please type in the correct number, enter any letter to open options: '))
-
+                    choiceResult = confirm_choice(EVENT, choiceID)
                 pause = False
-                get_next_node(choiceID, nodeID)
+                combat_calc(choiceResult)
+                get_next_scene(EVENT, choiceResult)
                 play_event(nodeID)
             except ValueError:
                 render_options()
@@ -252,82 +308,29 @@ def play_event(nodeID):
     return
 
 
-# Get the current scene in main storyline
-def get_scene():
-    global currScene
-    sql = c.execute('SELECT TextContent FROM Storyline WHERE TextID = ' + str(currScene))
-    data = c.fetchall()
-    return data[0][0]
-
-
-# Get the choices of the storyline
-def get_story_choices():
-    sql = c.execute('SELECT TextContent FROM Storyline WHERE TextPointer = ' + str(currScene))
-    data = c.fetchall()
-    return data
-
-
-# Confirm that the choice selected is valid
-def confirm_choice(cID):
-    sql = c.execute('SELECT TextID FROM Storyline WHERE TextPointer  = ' + str(cID))
-    data = c.fetchall()
-    return data
-
-
-# Calculating which scene will follow
-def scene_calc(choiceID):
-    sql = c.execute('SELECT SceneChance FROM Storyline WHERE TextPointer = ' + str(choiceID))
-    data = c.fetchall()
-    arr = []
-    for lst in data:
-        arr.append(lst[0])
-    ran = random.randint(0, 100)
-    abs_diff = lambda list_value: abs(list_value - ran)
-    nextScene = min(arr, key=abs_diff)
-    return nextScene
-
-
-# Get the next scene
-def get_next_scene(cID):
-    global currScene
-    nextScene = scene_calc(cID)
-    sql = c.execute('SELECT TextID FROM Storyline WHERE TextPointer  = ' + str(cID) + ' AND SceneChance = ' +
-                    str(nextScene))
-    data = c.fetchall()
-    currScene = data[0][0]
-
-
-# Check if the current scene has children, if scene has no children then it's game over
-def check_story_child():
-    sql = c.execute('SELECT Children FROM Storyline WHERE TextID = ' + str(currScene))
-    data = c.fetchall()
-    return data[0][0]
-
-
 # Progress the game
 def game_progress():
     global currScene
     pause = True
-    if not get_event():
-        nodeID = 1
-        play_event(nodeID)
     skip_line(4)
-    delay_print(get_scene())
-    if check_story_child():
+    delay_print(get_scene_content(STORY))
+    if check_child(STORY):
         while pause:
             skip_line(2)
-            for choice in get_story_choices():
+            for choice in get_choices(STORY):
                 print(choice[0])
             skip_line(1)
             try:
                 choiceID = int(input('Type in the number of your choice to progress, ' +
                                      'type in any letter to open options: '))
-                choiceResult = confirm_choice(choiceID)
+                choiceResult = confirm_choice(STORY, choiceID)
                 while not choiceResult:
-                    choiceID = int(input('Please type a correct number, enter in any letter to open options: '))
-
+                    choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
+                    choiceResult = confirm_choice(STORY, choiceID)
                 pause = False
-                get_next_scene(choiceID)
+                if event_exists(choiceResult):
+                    play_event(1)
+                get_next_scene(STORY, choiceResult)
                 game_progress()
             except ValueError:
                 render_options()
@@ -341,6 +344,7 @@ def start_game():
     while True:
         try:
             start = int(input("Enter any integer to begin, can't back out now: "))
-            game_progress()
+            skip_line(2)
+            return
         except ValueError:
             continue
