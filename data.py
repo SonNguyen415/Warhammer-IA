@@ -1,26 +1,30 @@
 from config import *
 
 
+# Get the current scene the saved character is at
 def get_curr_progress(charID):
     sql = c.execute('SELECT Progress FROM Characters WHERE CharID = ' + str(charID))
     data = c.fetchall()
     return data[0][0]
 
 
+# Get the quality of a given weapon
 def get_weapon_quality(typeID):
     sql = c.execute('SELECT Reliability FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
     data = c.fetchall()
     return data[0][0]
 
 
+# Get the size of a given weapon
 def get_weapon_size(typeID):
     sql = c.execute('SELECT WeaponSize FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
     data = c.fetchall()
     return data[0][0]
 
 
+# Get my weapons
 def get_my_weapons(charID):
-    sql = c.execute('SELECT WeaponID, Quality, WeaponType FROM Weapons WHERE CharID = ' + str(charID))
+    sql = c.execute('SELECT WeaponID, Quality, WeaponType FROM Weapons JOIN TypeOfWeapon WHERE CharID = ' + str(charID))
     data = c.fetchall()
     return data[0]
 
@@ -39,12 +43,11 @@ def get_weapon_data(wID):
     return data[0]
 
 
+# Get weapon type
 def get_weapon_type(wID):
     sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
     data = c.fetchall()
     return data[0][0]
-
-
 
 
 # Get the info of the characters
@@ -134,6 +137,7 @@ def check_corruption(charID):
     return 5
 
 
+# Show data of given weapon
 def show_weapon_data(weapon):
     wData = get_weapon_data(weapon)
     for attr in wData:
