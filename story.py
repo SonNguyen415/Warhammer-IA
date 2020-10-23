@@ -7,8 +7,7 @@ def end_game():
     time.sleep(1)
     try:
         restart = int(input("Input any integer to restart. Input any letter to exit: "))
-        render_menu()
-        start_game()
+        return restart
     except ValueError:
         exit_game()
 
@@ -341,7 +340,7 @@ def game_progress():
 def start_game():
     while True:
         try:
-            start = int(input("Enter any integer to begin: "))
+            start = int(input("Enter any integer to begin, can't back out now: "))
             game_progress()
         except ValueError:
             continue
