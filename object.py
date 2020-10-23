@@ -9,8 +9,7 @@ class Weapon(object):
         self.quality = self.maxQuality
         self.size = get_weapon_size(typeID)
 
-        # Improve weapon quality each time you maintain it
-
+    # Improve weapon quality each time you maintain it
     def maintain_weapon(self):
         self.quality += 1
         if self.quality >= self.maxQuality:
@@ -45,15 +44,19 @@ class Character(object):
         self.exp = exp
         self.check_stats()
 
+    # Kill character
     def kill(self):
         self.stats[0] = 0
 
+    # Wound character
     def wound(self, damage):
         self.stats[0] -= damage
 
+    # Check if character is dead
     def check_death(self):
         return self.stats[0] <= 0
 
+    # Check character stats
     def check_stats(self):
         for attr in self.data:
             self.stats.append(attr - math.trunc(math.sqrt(self.stress)))
@@ -64,11 +67,13 @@ class Character(object):
         self.usedInventory.append(newWeapon)
         self.freeInventory -= newWeapon.size
 
+    # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
         print(self.usedInventory)
         for weapon in self.usedInventory:
             show_weapon_data(weapon.typeID)
-            skip_line(2)
+            skip_line(1)
+        skip_line(1)
 
     # Level up the character if possible
     def ascend(self):
@@ -128,6 +133,7 @@ class Character(object):
         for weapon in self.usedInventory:
             update_weapons(weapon.wID, weapon.quality, self.charID, weapon.typeID)
 
+    # Increase character corruption
     def corrupt(self):
         val = check_corruption(self.charID)
         self.corruption += val
@@ -137,11 +143,14 @@ class Enemy(object):
     def __init__(self, HP, strength, endurance, durability, agility, accuracy):
         self.stats = [HP, strength, endurance, durability, agility, accuracy]
 
+    # Damage enemy
     def wound(self, damage):
         self.stats[0] -= damage
 
+    # Check if enemy is dead
     def check_death(self):
         return self.stats[0] <= 0
 
+    # Reduce durability
     def reduce_durability(self, damage):
         self.stats[3] -= damage
