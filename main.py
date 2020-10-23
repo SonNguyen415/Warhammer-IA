@@ -5,4 +5,5 @@ from story import *
 while True:
   render_menu()
   start_game()
+
   
