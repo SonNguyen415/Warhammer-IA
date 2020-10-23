@@ -1,5 +1,4 @@
-from objects import *
-import string
+from object import *
 
 
 # Display a list of all characters saved in database
@@ -18,36 +17,17 @@ def show_character_list():
     skip_line(1)
 
 
-# Show the stats of a given weapon
-def show_weapon_data(weapon):
-    wData = get_weapon_data(weapon)
-    for attr in wData:
-        print(attr)
-
-
-# Show stats of a given character
-def show_character(charID):
-    cData = get_character_data(charID)
-    for i, attr in enumerate(BASE_STATS[0]):
-        print(attr + ": " + str(cData[i]))
-
-        
-# Add weapons
-def add_weapons(wID, quality, typeID):
-    Weapon1 = Weapon(wID, quality, typeID)
-    return
-
-
 # Begin customization process
 def customize_character(pt):
-    skip_line(1)
+    global Player
     Player.show_stats()
     skip_line(1)
     print("You have " + str(pt) + " starting points, spend them wisely. \n")
     weapon = input("You have been provided with a lasgun. Enter w to view your weapon. Any other button to skip: ")
     skip_line(3)
     if weapon.lower() == "w":
-        show_weapon_data("Lasgun")
+        Player.show_weapon_data(LASGUN_ID)
+    skip_line(1)
     print("No additional weapon is available at level 1, you may purchase more upon ascension. \n")
     dist = input("Enter d to distribute points. Enter any other button to skip and save for later: ")
     skip_line(3)
@@ -55,8 +35,25 @@ def customize_character(pt):
           str(pt) + " points.\n")
     if dist.lower() == "d":
         Player.customize()
-    skip_line(1)
     Player.show_stats()
+
+
+def view_weapons():
+    print("Hello world")
+
+
+def load_player_options():
+    userOption = input("Choose your options, type your choice as spelled: ")
+    if userOption.lower() == "resume game":
+        return
+    elif userOption.lower() == "view weapons":
+        view_weapons()
+        load_player_options()
+    elif userOption.lower() == "edit character":
+        Player.customize()
+        load_player_options()
+    else:
+        load_player_options()
 
 
 # Load new game screen
@@ -64,9 +61,6 @@ def new_game():
     skip_line(5)
     global Player
     charID = get_id(0)
-    if charID == 0:
-        print("You have too many saves. You must delete some.")
-        delete_saves()
     name = input("Enter a name. Inputs with no letter will return to menu: ")
     count = 0
     for letter in list(string.ascii_lowercase):
@@ -75,10 +69,10 @@ def new_game():
     if count >= 26:
         render_menu()
         return
-    Player = Characters(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
-                        BASE_STATS[1][4], BASE_STATS[1][5], START_PTS)
-    Player.fill_inventory(1, 1)
-    add_weapons(get_id(1), get_weapon_quality(1), 1)
+    Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
+                       BASE_STATS[1][4],
+                       BASE_STATS[1][5], BASE_STATS[1][6], START_PTS, 0, 0, 0)
+    Player.fill_inventory(get_id(1), LASGUN_ID, get_weapon_type(LASGUN_ID))
     customize_character(START_PTS)
 
 
@@ -89,10 +83,12 @@ def load_game():
     show_character_list()
     try:
         charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
-        currScene = get_curr_progress(charID)
         cData = get_character_data(charID)
-        Player = Characters(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
-                            cData[9])
+        Player.show_stats()
+        Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
+                           cData[9], cData[10], cData[11], cData[12], cData[13])
+
+        currScene = get_curr_progress(charID)
         return
     except ValueError:
         render_menu()
@@ -116,11 +112,7 @@ def save_game():
     while error:
         insurance = input("Are you sure you want to save the game (Y/N)?")
         if insurance.lower() == "y":
-            if not_in_database(Player.charID):
-                insert_character(Player.charID, Player.name, Player.level, Player.data, Player.freePoints)
-            else:
-                update_character(Player.charID, Player.level, Player.data, Player.freePoints)
-
+            Player.save_character()
             return
         elif insurance.lower() == "n":
             error = False
@@ -132,9 +124,18 @@ def exit_game():
     sys.exit(0)
 
 
+# Show player stats and give option to edit it
+def view_character():
+    Player.show_stats()
+    print(indent(2) + "Resume Game \n")
+    print(indent(2) + "View Weapons \n")
+    print(indent(2) + "Edit Character \n")
+    load_player_options()
+
+
 # Load all the options a player can have in the menu
 def load_menu():
-    userOption = input("Choose your options: ")
+    userOption = input("Choose your options, type your choice as spelled: ")
     if userOption.lower() == "new game":
         new_game()
     elif userOption.lower() == "load game":
@@ -149,22 +150,25 @@ def load_menu():
 
 # Load the options, you can save, resume, exit, and customize your character
 def load_options():
-    userOption = input("Choose your options: ")
+    userOption = input("Choose your options, type the option as spelled: ")
     if userOption.lower() == "resume game":
         return
+    elif userOption.lower() == "view characters":
+        view_character()
     elif userOption.lower() == "save game":
         save_game()
     elif userOption.lower() == "exit game":
         exit_game()
     else:
-        load_menu()
+        load_options()
 
 
 # Create menu and starting screen
 def render_menu():
     skip_line(40)
     delay_print("Welcome to Warhammer 40k. The grim dark future of humanity is at hand. \n"
-                "Survival is your objective in this bloody galaxy. Please type the following option as given\n")
+                "Survival is your objective in this bloody galaxy. Please type the following option as given: ")
+    skip_line(2)
     print(indent(2) + "New Game \n")
     print(indent(2) + "Load Game \n")
     print(indent(2) + "Delete Saves \n")
@@ -172,13 +176,13 @@ def render_menu():
     load_menu()
     skip_line(10)
 
-    
+
 # Display the options menu screen
 def render_options():
     skip_line(4)
     print("Option Menu \n")
     print(indent(2) + "Resume Game \n")
+    print(indent(2) + "View Characters \n")
     print(indent(2) + "Save Game \n")
     print(indent(2) + "Exit Game \n")
     load_options()
-    skip_line(10)

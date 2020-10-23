@@ -12,6 +12,7 @@ def get_weapon_quality(typeID):
     data = c.fetchall()
     return data[0][0]
 
+
 def get_weapon_size(typeID):
     sql = c.execute('SELECT WeaponSize FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
     data = c.fetchall()
@@ -32,10 +33,18 @@ def get_purchasable_weapons(charID):
 
 
 # Get the stats of a given weapon
-def get_weapon_data(weapon):
-    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE WeaponType = "' + str(weapon) + '"')
+def get_weapon_data(wID):
+    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
     data = c.fetchall()
     return data[0]
+
+
+def get_weapon_type(wID):
+    sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
+    data = c.fetchall()
+    return data[0][0]
+
+
 
 
 # Get the info of the characters
@@ -46,45 +55,50 @@ def get_character_data(charID):
 
 
 # Change character stats
-def update_character(charID, lvl, val, fP):
+def update_character(charID, lvl, val, fP, corruption, exp, stress):
     sql = c.execute('UPDATE Characters SET CharLevel = ' + str(lvl) + ' WHERE CharID = ' + str(charID))
     for i in range(0, len(BASE_STATS[0])):
         sql = c.execute('UPDATE Characters SET ' + BASE_STATS[0][i] + ' = ' + str(val[i]) + ' WHERE CharID = ' +
                         str(charID))
     sql = c.execute('UPDATE Characters SET FreePoints = ' + str(fP) + ' WHERE CharID = ' + str(charID))
     sql = c.execute('UPDATE Characters SET Progress = ' + str(currScene) + ' WHERE CharID = ' + str(charID))
+    sql = c.execute('UPDATE Characters SET CharCorruption = ' + str(corruption) + ' WHERE CharID = ' + str(charID))
+    sql = c.execute('UPDATE Characters SET CharExp = ' + str(exp) + ' WHERE CharID = ' + str(charID))
+    sql = c.execute('UPDATE Characters SET Stress = ' + str(stress) + ' WHERE CharID = ' + str(charID))
     con.commit()
 
 
 # Create a new character and insert into database
-def insert_character(charID, cName, cLevel, cData, cFP):
-    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Strength, '
-                 'Endurance, Durability, Agility, Accuracy, InventoryCap, FreePoints, Progress) Values (' +
+def insert_character(charID, cName, cLevel, cData, cFP, cCorruption, cExp, cStress):
+    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Strength, Endurance, Durability, Agility,'
+                 'Accuracy, InventoryCap, FreePoints, Progress, CharCorruption, CharExp, Stress, Health) Values (' +
                  str(charID) + ', "' + str(cName) + '", ' + str(cLevel) + ', ' + str(cData[0]) + ', ' +
                  str(cData[1]) + ', ' + str(cData[2]) + ', ' + str(cData[3]) + ', ' + str(cData[4]) + ', ' +
-                 str(cData[5]) + ', ' + str(cFP) + ',' + str(currScene) + ')')
+                 str(cData[5]) + ', ' + str(cFP) + ',' + str(currScene) + ',' + str(cCorruption) + ', ' + str(cExp) +
+                 ', ' + str(cStress) + ')')
     sql = c.execute(insertion)
     con.commit()
 
 
 # Insert weapons into database
-def update_weapons(quantity, charID, wID, ):
-    insertion = ('INSERT INTO Ownership(Quantity, CharID, WeaponName) ' +
-                 'Values (' + str(quantity) + ',' + str(charID) + ',"' + str(weaponName) + '")')
+def update_weapons(wID, quality, charID, typeID):
+    insertion = ('INSERT INTO Weapons(WeaponID, Quality, CharID, TypeID) Values (' +
+                 str(wID) + ', ' + str(quality) + ', ' + str(charID) + ', ' + str(typeID) + ')')
     sql = c.execute(insertion)
     con.commit()
 
 
-# Delete a character from database
+# Delete a character from database and all associated weapons
 def delete_character(charID):
-    insertion = ('DELETE FROM Characters WHERE CharID = ' + str(charID))
-    sql = c.execute(insertion)
+    delete1 = ('DELETE FROM Characters WHERE CharID = ' + str(charID))
+    # delete2 = ('DELETE FROM Weapons WHERE CharID = ' + str(charID))
+    sql = c.execute(delete1)
     con.commit()
 
 
 # Get a new id for a new character
-def get_id(type):
-    if type == 0:
+def get_id(obj):
+    if obj == 0:
         sql = c.execute('SELECT CharID FROM Characters')
     else:
         sql = c.execute('SELECT WeaponID FROM Weapons')
@@ -93,10 +107,11 @@ def get_id(type):
         arr = []
         for i in range(0, len(data)):
             arr.append(data[i][0])
-        for j in range(1, 20):
+        for j in range(1, len(data)):
+            print(j in arr)
             if j not in arr:
                 return j
-        return 0
+        return len(data) + 1
     else:
         return 1
 
@@ -113,3 +128,13 @@ def not_in_database(charID):
     sql = c.execute('SELECT * FROM Characters WHERE CharID = ' + str(charID))
     data = c.fetchall()
     return not data
+
+
+def check_corruption(charID):
+    return 5
+
+
+def show_weapon_data(weapon):
+    wData = get_weapon_data(weapon)
+    for attr in wData:
+        print(attr)
