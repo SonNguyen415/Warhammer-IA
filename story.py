@@ -73,6 +73,7 @@ def confirm_event_choice(choiceID):
     return data
 
 
+# Auto resolving the fight event, randomized and based on stats
 def auto_resolve(enemyData, difficulty, survivalChance):
     return
 
@@ -94,6 +95,7 @@ def get_chosen_weapon_data():
     return weaponData
 
 
+# Player in melee
 def player_melee(difficulty, survivalChance):
     weaponData = get_chosen_weapon_data()
     currAgility = Player.stats[4] - difficulty
@@ -108,6 +110,7 @@ def player_melee(difficulty, survivalChance):
         CurrEnemy.reduce_durability(damage)
 
 
+ # Player turn to fight, what they can do depends on the phase
 def player_turn(phase, difficulty, survivalChance, distance):
     global Player
     global currEnemy
@@ -173,11 +176,13 @@ def player_turn(phase, difficulty, survivalChance, distance):
             enemy_turn(phase, difficulty, survivalChance)
 
 
+# Enemy turn to fight, what they will do is slightly randomized and based on enemy stats
 def enemy_turn(phase, difficulty, survivalChance):
     player_melee(difficulty, survivalChance)
     return
 
 
+# Initiating manual combat 
 def manual_fight(difficulty, survivalChance):
     phaseList = ["Movement", "Range"]
     not_in_melee = True
@@ -194,6 +199,7 @@ def manual_fight(difficulty, survivalChance):
         Player.kill()
 
 
+# Initial calculation for combat result
 def combat_calc(choiceID):
     global CurrEnemy
     difficulty = get_difficulty()
@@ -213,10 +219,12 @@ def combat_calc(choiceID):
         manual_fight(difficulty, survivalChance)
 
 
+# Get the next node of the event
 def get_next_node(choiceID, currNode):
     return
 
 
+# Begin the event
 def play_event(nodeID):
     pause = True
     skip_line(2)
@@ -245,6 +253,7 @@ def play_event(nodeID):
     return
 
 
+# Get the current scene in main storyline
 def get_scene():
     global currScene
     sql = c.execute('SELECT TextContent FROM Storyline WHERE TextID = ' + str(currScene))
@@ -252,18 +261,21 @@ def get_scene():
     return data[0][0]
 
 
+# Get the choices of the storyline
 def get_story_choices():
     sql = c.execute('SELECT TextContent FROM Storyline WHERE TextPointer = ' + str(currScene))
     data = c.fetchall()
     return data
 
 
+# Confirm that the choice selected is valid
 def confirm_choice(cID):
     sql = c.execute('SELECT TextID FROM Storyline WHERE TextPointer  = ' + str(cID))
     data = c.fetchall()
     return data
 
 
+# Calculating which scene will follow
 def scene_calc(choiceID):
     sql = c.execute('SELECT SceneChance FROM Storyline WHERE TextPointer = ' + str(choiceID))
     data = c.fetchall()
@@ -276,6 +288,7 @@ def scene_calc(choiceID):
     return nextScene
 
 
+# Get the next scene
 def get_next_scene(cID):
     global currScene
     nextScene = scene_calc(cID)
@@ -285,12 +298,14 @@ def get_next_scene(cID):
     currScene = data[0][0]
 
 
+# Check if the current scene has children, if scene has no children then it's game over
 def check_story_child():
     sql = c.execute('SELECT Children FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
     return data[0][0]
 
 
+# Progress the game
 def game_progress():
     global currScene
     pause = True
@@ -322,6 +337,7 @@ def game_progress():
         end_game()
 
 
+# Confirmation for game start
 def start_game():
     while True:
         try:
