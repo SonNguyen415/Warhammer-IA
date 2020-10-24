@@ -1,21 +1,37 @@
 import sqlite3 as sq
 import time
 import sys
+import math
+import random
+import string
 
 # identify location of database, courtesy of Monika Richardson
 con = sq.connect("database/vilinius.db")
 c = con.cursor()
 
-#
 currScene = 1
 Player = object
+CurrEnemy = object
 
-TIME_STOP = 0
+BUTTON = "x"
+STORY = 0
+EVENT = 1
+LASGUN_ID = 1
+MAX_EXP = 100
+STOP_TIME = 0
+WAIT_TIME = 0
 START_PTS = 5
 ASC_POINTS = 5
-BASE_STATS = [["Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
-              [5, 5, 5, 5, 5, 25]]
 
+CORRUPTION_INCREASE = 10
+CORRUPTION_DIFFERENCE = 5
+
+BASE_STATS = [["Initiative", "Health", "Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
+              [10, 100, 10, 10, 10, 10, 10, 25]]
+
+
+WEAPON_DAMAGE = 3
+WEAPON_RANGE = 4
 
 intro = open('database/intro.txt', 'r')
 introContent = intro.read()
@@ -32,7 +48,7 @@ def delay_print(text):
     for w in text:
         sys.stdout.write(w)
         sys.stdout.flush()
-        time.sleep(TIME_STOP)
+        time.sleep(STOP_TIME)
 
 
 # Skipping lines
