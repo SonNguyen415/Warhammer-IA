@@ -26,9 +26,9 @@ def event_exists(choiceID):
 
 
 # Get the scene content of the current node
-def get_scene_content(sceneType, nodeID=0):
+def get_scene_content(sceneType, eventID=0):
     if sceneType == EVENT:
-        sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodeID = ' + str(nodeID))
+        sql = c.execute('SELECT EventDescription FROM Event WHERE EventID = ' + str(eventID))
     else:
         sql = c.execute('SELECT TextContent FROM Storyline WHERE TextID = ' + str(currScene))
     data = c.fetchall()
@@ -102,33 +102,23 @@ def get_next_scene(sceneType, choiceID):
 
 
 # Begin the event
-def play_event(nodeID):
-    pause = True
+def play_event(eventID):
+    global CurrEnemy
+    global Player
+    global distance
     skip_line(2)
-    delay_print(get_scene_content(EVENT, nodeID))
-    if check_child(EVENT, nodeID):
-        while pause:
-            skip_line(2)
-            for choice in get_choices(EVENT, nodeID):
-                print(choice[0])
-            skip_line(1)
-            try:
-                choiceID = int(input('Type in the number of your choice to progress, ' +
-                                     'type in any letter to open options: '))
-                choiceResult = confirm_choice(EVENT, choiceID)
-                while not choiceResult:
-                    choiceID = int(input('Please type in the correct number, enter any letter to open options: '))
-                    choiceResult = confirm_choice(EVENT, choiceID)
-                pause = False
-                combat_calc(choiceResult)
-                get_next_scene(EVENT, choiceResult)
-                play_event(nodeID)
-            except ValueError:
-                render_options()
-    else:
-        skip_line(5)
-        end_game()
-    return
+    delay_print(get_scene_content(EVENT, eventID))
+    print("You have entered an event, you may not pause until you complete this event")
+    set_current_enemy(eventID)
+    distance = random.randint(100, 1000)
+    difficulty = get_difficulty(eventID)
+    currState = MOVEMENT
+    while True:
+        skip_line(2)
+        execute_state(currState, difficulty)
+        currState = evaluate_state(currState)
+        if currState == EVENT_END:
+            return
 
 
 # Progress the game
@@ -154,7 +144,8 @@ def game_progress():
                     choiceResult = confirm_choice(STORY, choiceID)
                 pause = False
                 if event_exists(choiceResult):
-                    play_event(1)
+                    eventID = get_event(choiceResult)
+                    play_event(eventID)
                 Player.corrupt(choiceResult)
                 get_next_scene(STORY, choiceResult)
                 game_progress()
@@ -167,6 +158,9 @@ def game_progress():
 
 # Confirmation for game start
 def start_game():
+    global Player
+    skip_line(10)
+    Player.show_stats()
     while True:
         start = input("Enter anything to continue, can't back out now: ")
         if start:

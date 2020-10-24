@@ -1,5 +1,7 @@
 from config import *
 
+Player = config.Player
+
 
 # Get the current scene the saved character is at
 def get_curr_progress(charID):

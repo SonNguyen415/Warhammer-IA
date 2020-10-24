@@ -9,6 +9,7 @@ import string
 con = sq.connect("database/vilinius.db")
 c = con.cursor()
 
+distance = 0
 currScene = 1
 Player = object
 CurrEnemy = object
@@ -29,7 +30,10 @@ CORRUPTION_DIFFERENCE = 5
 BASE_STATS = [["Initiative", "Health", "Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
               [10, 100, 10, 10, 10, 10, 10, 25]]
 
-
+EVENT_END = 0
+MOVEMENT = 1
+SHOOTING = 2
+MELEE = 3
 WEAPON_DAMAGE = 3
 WEAPON_RANGE = 4
 

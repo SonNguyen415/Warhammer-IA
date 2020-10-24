@@ -1,4 +1,4 @@
-from object import *
+from objects import *
 
 
 # Display a list of all characters saved in database

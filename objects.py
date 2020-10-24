@@ -1,5 +1,6 @@
 from data import *
 
+Player = data.Player
 
 class Weapon(object):
     def __init__(self, wID, typeID, weaponType):
@@ -37,6 +38,24 @@ class Weapon(object):
             print(str(wAttr[i][1]) + ': ' + str(wData[i]))
 
 
+class Enemy(object):
+    def __init__(self, initiative, HP, strength, endurance, durability, agility, accuracy):
+        self.data = [initiative, HP, strength, endurance, durability, agility, accuracy]
+        self.currInitiative = self.stats[0]
+
+    # Damage enemy
+    def wound(self, damage):
+        self.data[0] -= damage
+
+    # Check if enemy is dead
+    def check_living(self):
+        return self.data[0] > 0
+
+    # Reduce durability
+    def reduce_durability(self, damage):
+        self.data[3] -= damage
+
+
 class Character(object):
     def __init__(self, charID, name, level, initiative, HP, strength, endurance, durability, agility, accuracy,
                  inventoryCap, freePoints, exp, corruption, stress):
@@ -52,6 +71,7 @@ class Character(object):
         self.corruption = corruption
         self.exp = exp
         self.check_stats()
+        self.currInitiative = self.data[0]
 
     # Kill character
     def kill(self):
@@ -85,7 +105,8 @@ class Character(object):
                 weapon.display_weapon()
                 skip_line(1)
             try:
-                wIndex = int(input("Select an appropriate weapon id to view its data, enter a letter to continue: ")) - 1
+                wIndex = int(
+                    input("Select an appropriate weapon id to view its data, enter a letter to continue: ")) - 1
                 skip_line(1)
                 while wIndex < 0 or wIndex >= len(self.usedInventory):
                     wIndex = int(input("Please select an appropriate id as listed above: ")) - 1
@@ -160,20 +181,3 @@ class Character(object):
         if diff > CORRUPTION_DIFFERENCE:
             self.stress += 1
         self.corruption += CORRUPTION_INCREASE
-
-
-class Enemy(object):
-    def __init__(self, HP, strength, endurance, durability, agility, accuracy):
-        self.stats = [HP, strength, endurance, durability, agility, accuracy]
-
-    # Damage enemy
-    def wound(self, damage):
-        self.stats[0] -= damage
-
-    # Check if enemy is dead
-    def check_death(self):
-        return self.stats[0] <= 0
-
-    # Reduce durability
-    def reduce_durability(self, damage):
-        self.stats[3] -= damage
