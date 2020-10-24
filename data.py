@@ -73,12 +73,12 @@ def update_character(charID, lvl, val, fP, corruption, exp, stress):
 
 # Create a new character and insert into database
 def insert_character(charID, cName, cLevel, cData, cFP, cCorruption, cExp, cStress):
-    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Strength, Endurance, Durability, Agility,'
-                 'Accuracy, InventoryCap, FreePoints, Progress, CharCorruption, CharExp, Stress, Health) Values (' +
-                 str(charID) + ', "' + str(cName) + '", ' + str(cLevel) + ', ' + str(cData[0]) + ', ' +
+    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Initiative, Health, Strength, Endurance, '
+                 'Durability, Agility, Accuracy, InventoryCap, FreePoints, CharExp, Corruption, Stress, Progress) '
+                 'Values (' + str(charID) + ', "' + str(cName) + '", ' + str(cLevel) + ', ' + str(cData[0]) + ', ' +
                  str(cData[1]) + ', ' + str(cData[2]) + ', ' + str(cData[3]) + ', ' + str(cData[4]) + ', ' +
-                 str(cData[5]) + ', ' + str(cFP) + ',' + str(currScene) + ',' + str(cCorruption) + ', ' + str(cExp) +
-                 ', ' + str(cStress) + ')')
+                 str(cData[5]) + ', ' + str(cData[6]) + ', ' + str(cData[7]) + ', ' + str(cFP) + ',' + str(cExp) +
+                 ',' + str(cCorruption) + ', ' + str(cStress) + ', ' + str(currScene) + ')')
     sql = c.execute(insertion)
     con.commit()
 
@@ -133,12 +133,13 @@ def not_in_database(charID):
     return not data
 
 
-def check_corruption(charID):
-    return 5
+def get_table_data(table):
+    sql = c.execute('PRAGMA table_info(' + table + ')')
+    data = c.fetchall()
+    return data
 
 
-# Show data of given weapon
-def show_weapon_data(weapon):
-    wData = get_weapon_data(weapon)
-    for attr in wData:
-        print(attr)
+def check_corruption(choice):
+    sql = c.execute('SELECT CorruptionValue FROM Storyline WHERE TextID = ' + str(choice))
+    data = c.fetchall()
+    return data[0][0]

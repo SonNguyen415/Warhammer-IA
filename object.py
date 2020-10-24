@@ -27,17 +27,24 @@ class Weapon(object):
     # Show weapon data
     def display_weapon(self):
         print(("Weapon ID: " + str(self.typeID), "Weapon Quality: " + str(self.quality), "Weapon Type: " +
-                                                                          self.weaponType))
+               self.weaponType))
+
+    # Show data of given weapon
+    def show_weapon_data(self):
+        wData = get_weapon_data(self.wID)
+        wAttr = get_table_data('TypeOfWeapon')
+        for i in range(len(wData)):
+            print(str(wAttr[i][1]) + ': ' + str(wData[i]))
 
 
 class Character(object):
-    def __init__(self, charID, name, level, HP, strength, endurance, durability, agility, accuracy, inventoryCap,
-                 freePoints, corruption, exp, stress):
+    def __init__(self, charID, name, level, initiative, HP, strength, endurance, durability, agility, accuracy,
+                 inventoryCap, freePoints, exp, corruption, stress):
         self.charID = charID
         self.name = name
         self.level = level
         self.stress = stress
-        self.data = [HP, strength, endurance, durability, agility, accuracy, inventoryCap]
+        self.data = [initiative, HP, strength, endurance, durability, agility, accuracy, inventoryCap]
         self.stats = []
         self.freePoints = freePoints
         self.freeInventory = inventoryCap
@@ -71,15 +78,23 @@ class Character(object):
 
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
-        for weapon in self.usedInventory:
-            weapon.display_weapon()
         skip_line(2)
-        time.sleep(WAIT_TIME)
-        for weapon in self.usedInventory:
-            show_weapon_data(weapon.typeID)
-            skip_line(1)
-        skip_line(1)
-        time.sleep(WAIT_TIME)
+        displayingData = True
+        while displayingData:
+            for weapon in self.usedInventory:
+                weapon.display_weapon()
+                skip_line(1)
+            try:
+                wIndex = int(input("Select an appropriate weapon id to view its data, enter a letter to continue: ")) - 1
+                skip_line(1)
+                while wIndex < 0 or wIndex >= len(self.usedInventory):
+                    wIndex = int(input("Please select an appropriate id as listed above: ")) - 1
+                weapon = self.usedInventory[wIndex]
+                weapon.show_weapon_data()
+                time.sleep(WAIT_TIME)
+                skip_line(2)
+            except ValueError:
+                return
 
     # Level up the character if possible
     def ascend(self):
@@ -139,9 +154,9 @@ class Character(object):
             update_weapons(weapon.wID, weapon.quality, self.charID, weapon.typeID)
 
     # Increase character corruption
-    def corrupt(self):
-        val = check_corruption(self.charID)
-        self.corruption += val
+    def corrupt(self, choice):
+        val = check_corruption(choice)
+        self.corruption += CORRUPTION_INCREASE
 
 
 class Enemy(object):

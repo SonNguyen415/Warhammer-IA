@@ -6,3 +6,4 @@ while True:
     render_menu()
     start_game()
     game_progress()
+

@@ -9,8 +9,8 @@ def show_character_list():
         for char in charList:
             print(indent(2) + 'Name: ' + str(char[0]) + ', ID: ' + str(char[1]) + "\n")
     else:
-        new = input("No saves available, type start for new game. Type anything else to return to main menu: ")
-        if new.lower() == "start":
+        new = input("No saves available, type " + BUTTON + " for new game. Type anything else to return to main menu: ")
+        if new.lower() == BUTTON:
             new_game()
             return
         render_menu()
@@ -23,17 +23,18 @@ def customize_character(pt):
     Player.show_stats()
     skip_line(1)
     print("You have " + str(pt) + " starting points, spend them wisely. \n")
-    weapon = input("You have been provided with a lasgun. Enter w to view your weapon. Any other button to skip: ")
+    weapon = input("You have been provided with a lasgun. Enter " + BUTTON +
+                   " to view your weapon. Enter any other button to skip: ")
     skip_line(3)
-    if weapon.lower() == "w":
+    if weapon.lower() == BUTTON:
         Player.show_inventory()
     skip_line(1)
     print("No additional weapon is available at level 1, you may purchase more upon ascension. \n")
-    dist = input("Enter d to distribute points. Enter any other button to skip and save for later: ")
+    dist = input("Enter " + BUTTON + " to distribute points. Enter any other button to skip and save for later: ")
     skip_line(3)
-    print("You may input 0 if you don't wish to add points. Warning: undoing choices is not possible. You have " +
-          str(pt) + " points.\n")
-    if dist.lower() == "d":
+    if dist.lower() == BUTTON:
+        print("You may input 0 if you don't wish to add points. Warning: undoing choices is not possible. You have " +
+              str(pt) + " points.\n")
         Player.customize()
     Player.show_stats()
 
@@ -70,8 +71,7 @@ def new_game():
         render_menu()
         return
     Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
-                       BASE_STATS[1][4],
-                       BASE_STATS[1][5], BASE_STATS[1][6], START_PTS, 0, 0, 0)
+                       BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0)
     Player.fill_inventory(get_id(1), LASGUN_ID, get_weapon_type(LASGUN_ID))
     customize_character(START_PTS)
 
@@ -85,7 +85,7 @@ def load_game():
         charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
         cData = get_character_data(charID)
         Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
-                           cData[9], cData[10], cData[11], cData[12], cData[13])
+                           cData[9], cData[10], cData[11], cData[12], cData[13], cData[14])
         Player.show_stats()
         currScene = get_curr_progress(charID)
     except ValueError:
@@ -108,11 +108,12 @@ def delete_saves():
 def save_game():
     error = True
     while error:
-        insurance = input("Are you sure you want to save the game (Y/N)?")
-        if insurance.lower() == "y":
+        insurance = input("Are you sure you want to save the game? Enter " + BUTTON + " to confirm: ")
+        if insurance.lower() == BUTTON:
             Player.save_character()
-            return
-        elif insurance.lower() == "n":
+            print("The game had been saved")
+            render_options()
+        else:
             error = False
             render_options()
 
