@@ -1,9 +1,6 @@
 import sqlite3 as sq
 import time
 import sys
-import math
-import random
-import string
 
 # identify location of database, courtesy of Monika Richardson
 con = sq.connect("database/vilinius.db")

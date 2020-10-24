@@ -1,6 +1,5 @@
 from data import *
-
-Player = data.Player
+import math
 
 class Weapon(object):
     def __init__(self, wID, typeID, weaponType):

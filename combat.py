@@ -1,4 +1,5 @@
 from menu import *
+import random
 
 
 # Get the event of the current scene
