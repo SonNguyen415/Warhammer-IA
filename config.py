@@ -22,8 +22,9 @@ STOP_TIME = 0
 WAIT_TIME = 0
 START_PTS = 5
 ASC_POINTS = 5
-CORRUPTION_INCREASE = 10
 
+CORRUPTION_INCREASE = 10
+CORRUPTION_DIFFERENCE = 5
 
 BASE_STATS = [["Initiative", "Health", "Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
               [10, 100, 10, 10, 10, 10, 10, 25]]

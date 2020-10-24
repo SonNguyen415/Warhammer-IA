@@ -61,9 +61,9 @@ class Character(object):
     def wound(self, damage):
         self.stats[0] -= damage
 
-    # Check if character is dead
-    def check_death(self):
-        return self.stats[0] <= 0
+    # Check if character is alive
+    def check_living(self):
+        return self.stats[0] > 0
 
     # Check character stats
     def check_stats(self):
@@ -156,6 +156,9 @@ class Character(object):
     # Increase character corruption
     def corrupt(self, choice):
         val = check_corruption(choice)
+        diff = abs(val - self.corruption)
+        if diff > CORRUPTION_DIFFERENCE:
+            self.stress += 1
         self.corruption += CORRUPTION_INCREASE
 
 
