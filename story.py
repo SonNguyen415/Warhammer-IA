@@ -3,12 +3,12 @@ import combat
 
 
 # Game ending results in either restart or exit
-def end_game(currScene):
+def end_game():
     print("Game Over!")
     time.sleep(WAIT_TIME)
     try:
         restart = int(input("Input any integer to restart. Input any letter to exit: "))
-        return 1
+        return
     except ValueError:
         exit_game()
 
@@ -126,29 +126,36 @@ def play_event(Player, eventID):
                 if Player.currInitiative >= CurrEnemy.currInitiative:
                     player_shoot(Player, CurrEnemy, distance, currState, difficulty)
                     if not Player.check_living() or not CurrEnemy.check_living():
-                        return
+                        break
                     skip_line(2)
                     ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
                 else:
                     ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
                     if not Player.check_living() or not CurrEnemy.check_living():
-                        return
+                        break
                     skip_line(2)
                     player_shoot(Player, CurrEnemy, distance, currState, difficulty)
         elif currState == MELEE:
             if Player.currInitiative >= CurrEnemy.currInitiative:
                 player_melee(Player, CurrEnemy, distance)
                 if not Player.check_living() or not CurrEnemy.check_living():
-                    return
+                    break
                 skip_line(2)
                 ai_melee(CurrEnemy)
             else:
                 ai_melee(CurrEnemy)
                 if not Player.check_living() or not CurrEnemy.check_living():
-                    return
+                    break
                 skip_line(2)
                 player_melee(Player, CurrEnemy, distance)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
+    if Player.check_living():
+        Player.exp += CurrEnemy.stats[1]
+        if Player.exp >= ASC_EXP:
+            Player.ascend()
+        return 0
+    else:
+        return 1
 
 
 # Progress the game
@@ -173,7 +180,9 @@ def game_progress(currScene, Player):
             pause = False
             if event_exists(choiceResult):
                 eventID = get_event(choiceResult)
-                play_event(Player, eventID)
+                eventResult = play_event(Player, eventID)
+                if eventResult == 1:
+                    return
             Player.reset_initiative()
             Player.corrupt(choiceResult)
             currScene = get_next_scene(STORY, choiceResult)
@@ -182,7 +191,6 @@ def game_progress(currScene, Player):
             #     render_options(Player)
     else:
         skip_line(5)
-        end_game(currScene)
 
 
 # Confirmation for game start

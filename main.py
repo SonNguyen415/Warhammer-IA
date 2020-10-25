@@ -12,3 +12,4 @@ while True:
     Player.check_stats()
     start_game()
     currScene = game_progress(currScene, Player)
+    end_game()

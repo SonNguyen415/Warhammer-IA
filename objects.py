@@ -56,7 +56,7 @@ class Enemy(object):
         if currWeapon != 0:
             weaponData = get_weapon_data(currWeapon)
             weaponQuality = get_weapon_quality(currWeapon)
-            self.durability = self.stats[4] + ((weaponData[8] + weaponQuality) / 10)
+            self.durability = self.stats[4] + ((weaponData[WEAPON_DURABILITY] + weaponQuality) / 10)
             self.damage = 0
         else:
             self.durability = self.stats[4]
@@ -68,7 +68,7 @@ class Enemy(object):
         if currWeapon != 0:
             weaponQuality = get_weapon_quality(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[3] + (weaponQuality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weaponQuality + self.stats[2]) / 10
         else:
             self.damage = self.stats[2]
 
@@ -169,10 +169,12 @@ class Character(object):
 
     # Level up the character if possible
     def ascend(self):
-        if self.exp >= MAX_EXP:
-            self.level += 1
-            self.freePoints += ASC_POINTS
-            self.exp = self.exp - MAX_EXP
+        skip_line(5)
+        self.level += 1
+        self.freePoints += ASC_POINTS
+        self.exp = self.exp - ASC_EXP
+        print("You have ascended! You are now Level " + str(self.level))
+        skip_line(5)
 
     # Customize your character
     def customize(self):
@@ -237,7 +239,7 @@ class Character(object):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.durability = self.stats[4] + (weaponData[8] + weapon.quality) / 10
+            self.durability = self.stats[4] + (weaponData[WEAPON_DURABILITY] + weapon.quality) / 10
         else:
             self.durability = self.stats[4]
         self.damage = 0
@@ -250,7 +252,7 @@ class Character(object):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[3] + (weapon.quality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[2]) / 10
         else:
             self.damage = self.stats[2]
 

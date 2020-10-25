@@ -24,10 +24,10 @@ def get_my_weapons(charID):
 
 
 # Get all the weapons that you can buy
-def get_purchasable_weapons(charID):
-    sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charID))
+def get_purchasable_weapons(charLevel):
+    sql = c.execute('SELECT TypeID, WeaponType, WeaponSize, Cost FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charLevel))
     data = c.fetchall()
-    return data[0]
+    return data
 
 
 # Get the stats of a given weapon

@@ -41,8 +41,38 @@ def customize_character(Player, pt):
     return Player
 
 
-def view_weapons():
-    print("Hello world")
+def view_weapons(Player):
+    Player.show_inventory()
+    try:
+        selection = int(input("Select a weapon id to discard from your inventory. "
+                              "Enter any letter if you don't want to discard any: "))
+        Player.remove_inventory(selection)
+    except ValueError:
+        print("Hello world")
+
+
+def purchase_weapons(Player):
+    weaponList = get_purchasable_weapons(Player.level)
+    print("You have " + str(Player.freeInventory) + " units of free space in your inventory \n")
+    print("You have  " + str(Player.freePoints) + " free points you can spend. \n")
+    for weapon in weaponList:
+        print(("TypeID: " + str(weapon[0]), "Weapon Type: " + str(weapon[1]), "Weapon Size: " + str(weapon[2]),
+               "Weapon Cost: " + str(weapon[3])))
+    skip_line(2)
+    try:
+        buyWeapon = int(input("Select the id of the weapon you want to buy. Enter any letter if you won't buy "
+                              "anything: "))
+        weaponData = get_weapon_data(buyWeapon)
+        while weaponData[WEAPON_COST] > Player.freePoints:
+            buyWeapon = int(input("You don't have enough points to purchase this. Please select another id: "))
+            weaponData = get_weapon_data(buyWeapon)
+        while weaponData[WEAPON_SIZE] > Player.freeInventory:
+            buyWeapon = int(input("You don't have enough space in your inventory for this weapon. Please select "
+                                  "another id: "))
+            weaponData = get_weapon_data(buyWeapon)
+        Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
+    except ValueError:
+        return
 
 
 def load_player_options(Player):
@@ -50,10 +80,13 @@ def load_player_options(Player):
     if userOption.lower() == "resume game":
         return
     elif userOption.lower() == "view weapons":
-        view_weapons()
+        view_weapons(Player)
         load_player_options(Player)
     elif userOption.lower() == "edit character":
         Player.customize()
+        load_player_options(Player)
+    elif userOption.lower() == "purchase weapons":
+        purchase_weapons(Player)
         load_player_options(Player)
     else:
         load_player_options(Player)
@@ -73,9 +106,8 @@ def new_game():
         return
     Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
                        BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0)
-    weaponQuality = get_weapon_quality(LASGUN_ID)
-    weaponType = get_weapon_data(LASGUN_ID)[TYPE_NAME]
-    Player.fill_inventory(get_id(1), LASGUN_ID, weaponType, weaponQuality)
+    weaponData = get_weapon_data(LASGUN_ID)[TYPE_NAME]
+    Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
     return customize_character(Player, START_PTS)
 
 
@@ -132,6 +164,7 @@ def view_character(Player):
     print(indent(2) + "Resume Game \n")
     print(indent(2) + "View Weapons \n")
     print(indent(2) + "Edit Character \n")
+    print(indent(2) + "Purchase Weapons \n")
     load_player_options(Player)
 
 

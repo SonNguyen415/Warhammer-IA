@@ -148,6 +148,7 @@ def count_hit(maxNum, minScore, x):
 
 def calc_numHits(Attacker, Defender, weaponData, difficulty, distance):
     numShots = math.trunc(weaponData[RATE_OF_FIRE] / 10)
+    print("Shot " + str(numShots) + " times")
     attackerAccuracy = Attacker.stats[5] - difficulty
     defenderAgility = difficulty + Defender.stats[4]
     minScore = check_success(attackerAccuracy, defenderAgility) - (weaponData[4] - distance) / 1000
