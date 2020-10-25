@@ -6,10 +6,7 @@ import sys
 con = sq.connect("database/vilinius.db")
 c = con.cursor()
 
-distance = 0
-currScene = 1
-CurrEnemy = object
-Player = object
+
 
 BUTTON = "x"
 STORY = 0

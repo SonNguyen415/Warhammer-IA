@@ -2,8 +2,6 @@ from menu import *
 import random
 import menu
 
-Player = menu.Player
-
 
 # Get the event of the current scene
 def get_event(choiceID):
@@ -38,7 +36,7 @@ def get_difficulty(eventID):
 
 
 # Show all stats
-def show_stats():
+def show_stats(Player):
     wView = input("Enter w to view weapon stats, any other button to skip: ")
     if wView.lower() == "w":
         Player.show_inventory()
@@ -55,13 +53,13 @@ def select_weapon():
 
 
 def set_current_enemy(eventID):
-    global CurrEnemy
     sql = c.execute(
-        'SELECT EnemyInitiative, EnemyStrength, EnemyEndurance, EnemyDurability, EnemyAgility, EnemyAccuracy '
-        'FROM Enemies JOIN Event WHERE Event.EventID = ' + str(eventID) +
+        'SELECT EnemyInitiative, EnemyHealth, EnemyStrength, EnemyEndurance, EnemyDurability, EnemyAgility, '
+        'EnemyAccuracy FROM Enemies JOIN Event WHERE Event.EventID = ' + str(eventID) +
         ' AND Enemies.EnemyID = Event.EnemyID ')
     data = c.fetchall()
     CurrEnemy = Enemy(data[0][0], data[0][1], data[0][2], data[0][3], data[0][4], data[0][5], data[0][6])
+    return CurrEnemy
 
 
 def provide_event_option(currState):
@@ -74,7 +72,7 @@ def provide_event_option(currState):
                 choice = int(input("Type in the number of your choice: "))
                 if choice > len(data):
                     print("Please type a valid value")
-                    return choice
+                return choice
             except ValueError:
                 print("Please type a valid value")
 
@@ -86,7 +84,7 @@ def get_initiative_cost(currState, choice):
     return data[0][0]
 
 
-def get_new_distance(distance):
+def get_new_distance(Player, distance):
     max_displacement = (Player.stats[4] * 2 + Player.stats[2] / 2) / 10
     displacement = int(input("Enter your desired movement, you can only move up to " + str(max_displacement) + " m: "))
     if displacement > distance:
@@ -106,7 +104,7 @@ def count_hit(maxNum, minScore, x):
     return total
 
 
-def calc_numHits(difficulty, weaponData, distance):
+def calc_numHits(Player, CurrEnemy, difficulty, weaponData, distance):
     numShots = weaponData[2][0] / 10
     currAccuracy = Player.stats[5] - difficulty
     enemyAgility = difficulty + CurrEnemy.data[4]
@@ -116,8 +114,8 @@ def calc_numHits(difficulty, weaponData, distance):
     return numHits
 
 
-def calc_wound(difficulty, weaponData, distance):
-    numHits = calc_numHits(difficulty, weaponData, distance)
+def calc_wound(Player, CurrEnemy, difficulty, weaponData, distance):
+    numHits = calc_numHits(Player, CurrEnemy, difficulty, weaponData, distance)
     if numHits > 0:
         print(str(numHits) + " of your shots hit the targets")
         weaponDamage = weaponData[3] / 10
@@ -133,9 +131,7 @@ def calc_wound(difficulty, weaponData, distance):
         print("You missed every shot! Improve your accuracy next time! If you manage to survive..\n")
 
 
-def player_move(currState):
-    global distance
-    global Player
+def player_move(Player, distance, currState):
     choice = provide_event_option(currState)
     if choice == 1:
         distanceInMeters = distance / 10
@@ -148,17 +144,16 @@ def player_move(currState):
               "by half your endurance score. \n")
         move = input("Enter " + BUTTON + " to move forward, you may enter any other letter to skip: ")
         if move == BUTTON:
-            distance = get_new_distance(distance)
+            distance = get_new_distance(Player, distance)
         Player.currInitiative -= get_initiative_cost(currState, choice)
 
 
-def ai_move():
+def ai_move(CurrEnemy):
     return
 
 
-def player_shoot(currState, difficulty):
-    global Player
-    show_stats()
+def player_shoot(Player, CurrEnemy, distance, currState, difficulty):
+    show_stats(Player)
     choice = provide_event_option(currState)
     if choice == 1:
         notInRange = True
@@ -175,49 +170,48 @@ def player_shoot(currState, difficulty):
                       " to skip this turn \n")
         fight = input("You may press " + BUTTON + " to shoot. Be warned, shooting will take up initiative")
         if fight.lower() == BUTTON:
-            calc_wound(difficulty, weaponData, distance)
+            calc_wound(Player, CurrEnemy, difficulty, weaponData, distance)
         Player.currInitiative -= get_initiative_cost(currState, choice)
 
 
-def ai_shoot():
+def ai_shoot(CurrEnemy):
     return
 
 
-def player_first(currState, difficulty):
+def player_first(Player, CurrEnemy, distance, currState, difficulty):
     if currState == MOVEMENT:
-        player_move(currState)
-        ai_move()
+        player_move(Player, distance, currState)
+        ai_move(CurrEnemy)
     elif currState == SHOOTING:
-        player_shoot(currState, difficulty)
-        ai_shoot()
+        player_shoot(Player, CurrEnemy, distance, currState, difficulty)
+        ai_shoot(CurrEnemy)
     elif currState == MELEE:
         print("In Melee")
 
 
-def ai_first(currState, difficulty):
+def ai_first(Player, CurrEnemy, distance, currState, difficulty):
     if currState == MOVEMENT:
-        ai_move()
-        player_move(currState)
+        ai_move(CurrEnemy)
+        player_move(Player, distance, currState)
     elif currState == SHOOTING:
-        ai_shoot()
-        player_shoot(currState, difficulty)
+        ai_shoot(CurrEnemy)
+        player_shoot(Player, CurrEnemy, distance, currState, difficulty)
     elif currState == MELEE:
         print("In Melee")
 
 
-def execute_state(currState, difficulty):
-    global Player
-    global CurrEnemy
-    if Player.currInitiative >= CurrEnemy.initiative:
-        player_first(currState, difficulty)
+def read_state(distance):
+    return
+
+
+def execute_state(Player, CurrEnemy, distance, currState, difficulty):
+    if Player.currInitiative >= CurrEnemy.currInitiative:
+        player_first(Player, CurrEnemy, distance, currState, difficulty)
     else:
-        ai_first(currState, difficulty)
+        ai_first(Player, CurrEnemy, distance, currState, difficulty)
 
 
-def evaluate_state(currState):
-    global Player
-    global CurrEnemy
-    global distance
+def evaluate_state(Player, CurrEnemy, distance, currState):
     if currState == MOVEMENT:
         return SHOOTING
     elif currState == SHOOTING:

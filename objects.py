@@ -1,6 +1,7 @@
 from data import *
 import math
 
+
 class Weapon(object):
     def __init__(self, wID, typeID, weaponType):
         self.wID = wID
@@ -40,7 +41,7 @@ class Weapon(object):
 class Enemy(object):
     def __init__(self, initiative, HP, strength, endurance, durability, agility, accuracy):
         self.data = [initiative, HP, strength, endurance, durability, agility, accuracy]
-        self.currInitiative = self.stats[0]
+        self.currInitiative = self.data[0]
 
     # Damage enemy
     def wound(self, damage):

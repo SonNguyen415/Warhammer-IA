@@ -1,18 +1,14 @@
 from combat import *
 import combat
 
-Player = combat.Player
-
 
 # Game ending results in either restart or exit
-def end_game():
-    global currScene
+def end_game(currScene):
     print("Game Over!")
     time.sleep(WAIT_TIME)
     try:
         restart = int(input("Input any integer to restart. Input any letter to exit: "))
-        currScene = 1
-        return restart
+        return 1
     except ValueError:
         exit_game()
 
@@ -29,7 +25,7 @@ def event_exists(choiceID):
 
 
 # Get the scene content of the current node
-def get_scene_content(sceneType, eventID=0):
+def get_scene_content(currScene, sceneType, eventID=0):
     if sceneType == EVENT:
         sql = c.execute('SELECT EventDescription FROM Event WHERE EventID = ' + str(eventID))
     else:
@@ -39,7 +35,7 @@ def get_scene_content(sceneType, eventID=0):
 
 
 # Check if the node has children leading from it, event or game will end if scene has no child
-def check_child(sceneType, nodeID=0):
+def check_child(currScene, sceneType, nodeID=0):
     if sceneType == EVENT:
         sql = c.execute('SELECT NodeContent FROM EventNode WHERE NodePointer = ' + str(nodeID))
     else:
@@ -49,7 +45,7 @@ def check_child(sceneType, nodeID=0):
 
 
 # Get the content of the choices you can make for the event
-def get_choices(sceneType, pointer=0):
+def get_choices(currScene, sceneType, pointer=0):
     if sceneType == STORY:
         sql = c.execute('SELECT TextContent FROM Storyline WHERE TextPointer = ' + str(currScene))
     else:
@@ -59,7 +55,7 @@ def get_choices(sceneType, pointer=0):
 
 
 # Confirm that the choice selected is valid
-def confirm_choice(sceneType, cID):
+def confirm_choice(currScene, sceneType, cID):
     if sceneType == STORY:
         sql = c.execute('SELECT TextID FROM Storyline WHERE TextType  = ' + str(cID) +
                         ' AND TextPointer = ' + str(currScene))
@@ -70,7 +66,7 @@ def confirm_choice(sceneType, cID):
 
 
 # Get the list of scenes that can follow due to the choice selected
-def scene_list(sceneType, choiceID):
+def get_scene_list(sceneType, choiceID):
     if sceneType == STORY:
         sql = c.execute('SELECT TextID FROM Storyline WHERE TextPointer = ' + str(choiceID))
     else:
@@ -92,77 +88,72 @@ def scene_calc(sceneList):
 
 # Get the next scene
 def get_next_scene(sceneType, choiceID):
-    global currScene
-    sceneList = scene_list(sceneType, choiceID)
+    sceneList = get_scene_list(sceneType, choiceID)
     nextScene = scene_calc(sceneList)
     if sceneType == STORY:
         sql = c.execute('SELECT TextID FROM Storyline WHERE TextID = ' + str(nextScene))
         data = c.fetchall()
-        currScene = data[0][0]
+        return data[0][0]
     else:
         print("Stop here for now")
         exit_game()
 
 
 # Begin the event
-def play_event(eventID):
-    global CurrEnemy
-    global Player
-    global distance
+def play_event(Player, eventID):
     skip_line(2)
     delay_print(get_scene_content(EVENT, eventID))
     print("You have entered an event, you may not pause until you complete this event")
-    set_current_enemy(eventID)
+    CurrEnemy = set_current_enemy(eventID)
     distance = random.randint(100, 1000)
     difficulty = get_difficulty(eventID)
     currState = MOVEMENT
     while True:
         skip_line(2)
-        execute_state(currState, difficulty)
-        currState = evaluate_state(currState)
+        distance = read_state(Player, CurrEnemy, distance, currState, difficulty)
+        execute_state(Player, CurrEnemy, distance, currState, difficulty)
+        currState = evaluate_state(Player, CurrEnemy, distance, currState)
         if currState == EVENT_END:
             return
 
 
 # Progress the game
-def game_progress():
-    global currScene
-    global Player
+def game_progress(currScene, Player):
     pause = True
     skip_line(4)
-    scene_content = get_scene_content(STORY)
+    scene_content = get_scene_content(currScene, STORY)
     delay_print(scene_content[0][0])
-    if check_child(STORY) and Player.check_living():
+    if check_child(currScene, STORY) and Player.check_living():
         while pause:
             skip_line(2)
-            for choice in get_choices(STORY):
+            for choice in get_choices(currScene, STORY):
                 print(choice[0])
             skip_line(1)
             try:
                 choiceID = int(input('Type in the number of your choice to progress, ' +
                                      'type in any letter to open options: '))
-                choiceResult = confirm_choice(STORY, choiceID)
+                choiceResult = confirm_choice(currScene, STORY, choiceID)
                 while not choiceResult:
                     choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
-                    choiceResult = confirm_choice(STORY, choiceID)
+                    choiceResult = confirm_choice(currScene, STORY, choiceID)
                 pause = False
                 if event_exists(choiceResult):
                     eventID = get_event(choiceResult)
-                    play_event(eventID)
+                    play_event(Player, eventID)
                 Player.corrupt(choiceResult)
-                get_next_scene(STORY, choiceResult)
-                game_progress()
+                currScene = get_next_scene(STORY, choiceResult)
+                game_progress(currScene, Player)
             except ValueError:
-                render_options()
+                render_options(Player)
     else:
         skip_line(5)
-        end_game()
+        end_game(currScene)
 
 
 # Confirmation for game start
 def start_game():
-    skip_line(10)
     while True:
         start = input("Enter anything to continue, can't back out now: ")
         if start:
+            skip_line(10)
             return
