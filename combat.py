@@ -1,5 +1,8 @@
 from menu import *
 import random
+import menu
+
+Player = menu.Player
 
 
 # Get the event of the current scene

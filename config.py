@@ -8,8 +8,8 @@ c = con.cursor()
 
 distance = 0
 currScene = 1
-Player = object
 CurrEnemy = object
+Player = object
 
 BUTTON = "x"
 STORY = 0

@@ -1,4 +1,8 @@
+import string
 from objects import *
+import objects
+
+Player = objects.Player
 
 
 # Display a list of all characters saved in database
@@ -44,6 +48,7 @@ def view_weapons():
 
 
 def load_player_options():
+    global Player
     userOption = input("Choose your options, type your choice as spelled: ")
     if userOption.lower() == "resume game":
         return

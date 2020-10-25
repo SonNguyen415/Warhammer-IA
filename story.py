@@ -1,4 +1,7 @@
 from combat import *
+import combat
+
+Player = combat.Player
 
 
 # Game ending results in either restart or exit
@@ -158,9 +161,7 @@ def game_progress():
 
 # Confirmation for game start
 def start_game():
-    global Player
     skip_line(10)
-    Player.show_stats()
     while True:
         start = input("Enter anything to continue, can't back out now: ")
         if start:
