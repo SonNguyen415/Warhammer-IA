@@ -3,23 +3,16 @@ import math
 
 
 class Weapon(object):
-    def __init__(self, wID, typeID, weaponType):
+    def __init__(self, wID, typeID, weaponType, weaponQuality):
         self.wID = wID
         self.typeID = typeID
-        self.maxQuality = get_weapon_quality(typeID)
+        self.maxQuality = weaponQuality
         self.quality = self.maxQuality
-        self.size = get_weapon_size(typeID)
+        self.size = get_weapon_data(typeID)[WEAPON_SIZE]
         self.weaponType = weaponType
 
-    # Improve weapon quality each time you maintain it
-    def maintain_weapon(self):
-        self.quality += 1
-        if self.quality >= self.maxQuality:
-            print("You've maximized the reliability of this weapon.")
-            self.quality = self.maxQuality
-
     # Damage the weapons due to use
-    def damage_weapon(self):
+    def lower_quality(self):
         self.quality -= 2
         if self.quality <= 0:
             print("This weapon is now broken.")
@@ -39,21 +32,45 @@ class Weapon(object):
 
 
 class Enemy(object):
-    def __init__(self, initiative, HP, strength, endurance, durability, agility, accuracy):
-        self.data = [initiative, HP, strength, endurance, durability, agility, accuracy]
-        self.currInitiative = self.data[0]
+    def __init__(self, enemyID, initiative, HP, strength, endurance, durability, agility, accuracy):
+        self.enemyID = enemyID
+        self.stats = [initiative, HP, strength, endurance, durability, agility, accuracy]
+        self.currInitiative = self.stats[0]
+        self.damage = 0
+        self.durability = self.stats[4]
+        self.defending = False
 
     # Damage enemy
     def wound(self, damage):
-        self.data[0] -= damage
+        self.stats[1] -= damage
 
     # Check if enemy is dead
     def check_living(self):
-        return self.data[0] > 0
+        return self.stats[1] > 0
 
-    # Reduce durability
-    def reduce_durability(self, damage):
-        self.data[3] -= damage
+    def attack(self):
+        self.damage = self.stats[2] + 10
+
+    def guard(self, currWeapon):
+        self.defending = True
+        if currWeapon != 0:
+            weaponData = get_weapon_data(currWeapon)
+            weaponQuality = get_weapon_quality(currWeapon)
+            self.durability = self.stats[4] + ((weaponData[8] + weaponQuality) / 10)
+            self.damage = 0
+        else:
+            self.durability = self.stats[4]
+
+    def unguard(self):
+        self.durability = self.stats[4]
+
+    def attack(self, currWeapon):
+        if currWeapon != 0:
+            weaponQuality = get_weapon_quality(currWeapon)
+            weaponData = get_weapon_data(currWeapon)
+            self.damage = weaponData[3] + (weaponQuality + self.stats[2]) / 10
+        else:
+            self.damage = self.stats[2]
 
 
 class Character(object):
@@ -72,18 +89,21 @@ class Character(object):
         self.exp = exp
         self.check_stats()
         self.currInitiative = self.data[0]
+        self.damage = 0
+        self.durability = self.data[4]
+        self.defending = False
 
     # Kill character
     def kill(self):
-        self.stats[0] = 0
+        self.stats[1] = 0
 
     # Wound character
     def wound(self, damage):
-        self.stats[0] -= damage
+        self.stats[1] -= damage
 
     # Check if character is alive
     def check_living(self):
-        return self.stats[0] > 0
+        return self.stats[1] > 0
 
     # Check character stats
     def check_stats(self):
@@ -91,10 +111,40 @@ class Character(object):
             self.stats.append(attr - math.trunc(math.sqrt(self.stress)))
 
     # Fill the inventory with the data of the selected weapon
-    def fill_inventory(self, weaponID, typeID, weaponType):
-        newWeapon = Weapon(weaponID, typeID, weaponType)
+    def fill_inventory(self, weaponID, typeID, weaponType, weaponQuality):
+        newWeapon = Weapon(weaponID, typeID, weaponType, weaponQuality)
         self.usedInventory.append(newWeapon)
         self.freeInventory -= newWeapon.size
+
+    def find_weapon(self, weaponID):
+        for weapon in self.usedInventory:
+            if weapon.wID == weaponID:
+                return weapon
+        return 0
+
+    def remove_inventory(self, weaponID):
+        weapon = self.find_weapon(weaponID)
+        if weapon == 0:
+            print("You own no such weapon")
+            return
+        self.usedInventory.remove(weapon)
+
+    def check_weapon_usability(self, weaponID):
+        weapon = self.find_weapon(weaponID)
+        if weapon == 0:
+            return
+        if weapon.quality == 0:
+            discard = input("This weapon is broken. Do you want to discard this weapon? Enter " +
+                            BUTTON + " to do so: ")
+            if discard == BUTTON:
+                self.remove_inventory(weaponID)
+        return weapon.quality > 0
+
+    def damage_weapon(self, weaponID):
+        weapon = self.find_weapon(weaponID)
+        if weapon == 0:
+            return
+        weapon.lower_quality()
 
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
@@ -105,8 +155,8 @@ class Character(object):
                 weapon.display_weapon()
                 skip_line(1)
             try:
-                wIndex = int(
-                    input("Select an appropriate weapon id to view its data, enter a letter to continue: ")) - 1
+                wIndex = int(input("Select an appropriate weapon id to view its data, or "
+                                   "enter a letter to continue: ")) - 1
                 skip_line(1)
                 while wIndex < 0 or wIndex >= len(self.usedInventory):
                     wIndex = int(input("Please select an appropriate id as listed above: ")) - 1
@@ -181,3 +231,28 @@ class Character(object):
         if diff > CORRUPTION_DIFFERENCE:
             self.stress += 1
         self.corruption += CORRUPTION_INCREASE
+
+    def guard(self, currWeapon):
+        self.defending = True
+        if currWeapon != 0:
+            weapon = self.find_weapon(currWeapon)
+            weaponData = get_weapon_data(currWeapon)
+            self.durability = self.stats[4] + (weaponData[8] + weapon.quality) / 10
+        else:
+            self.durability = self.stats[4]
+        self.damage = 0
+
+    def unguard(self):
+        self.defending = False
+        self.durability = self.stats[4]
+
+    def attack(self, currWeapon):
+        if currWeapon != 0:
+            weapon = self.find_weapon(currWeapon)
+            weaponData = get_weapon_data(currWeapon)
+            self.damage = weaponData[3] + (weapon.quality + self.stats[2]) / 10
+        else:
+            self.damage = self.stats[2]
+
+    def reset_initiative(self):
+        self.currInitiative = self.stats[0]

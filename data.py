@@ -15,16 +15,10 @@ def get_weapon_quality(typeID):
     return data[0][0]
 
 
-# Get the size of a given weapon
-def get_weapon_size(typeID):
-    sql = c.execute('SELECT WeaponSize FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
-    data = c.fetchall()
-    return data[0][0]
-
-
 # Get my weapons
 def get_my_weapons(charID):
-    sql = c.execute('SELECT WeaponID, Quality, WeaponType FROM Weapons JOIN TypeOfWeapon WHERE CharID = ' + str(charID))
+    sql = c.execute('SELECT WeaponID, Weapons.TypeID, WeaponType, Quality FROM Weapons JOIN TypeOfWeapon WHERE CharID '
+                    '= ' + str(charID) + ' AND Weapons.TypeID = TypeOfWeapon.TypeID')
     data = c.fetchall()
     return data[0]
 
@@ -43,11 +37,10 @@ def get_weapon_data(wID):
     return data[0]
 
 
-# Get weapon type
-def get_weapon_type(wID):
-    sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
+def get_ai_weapon(enemyID):
+    sql = c.execute('SELECT TypeID FROM EnemyWeapons WHERE EnemyID = ' + str(enemyID))
     data = c.fetchall()
-    return data[0][0]
+    return data[0]
 
 
 # Get the info of the characters

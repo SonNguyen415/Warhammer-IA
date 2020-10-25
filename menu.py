@@ -73,7 +73,9 @@ def new_game():
         return
     Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
                        BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0)
-    Player.fill_inventory(get_id(1), LASGUN_ID, get_weapon_type(LASGUN_ID))
+    weaponQuality = get_weapon_quality(LASGUN_ID)
+    weaponType = get_weapon_data(LASGUN_ID)[TYPE_NAME]
+    Player.fill_inventory(get_id(1), LASGUN_ID, weaponType, weaponQuality)
     return customize_character(Player, START_PTS)
 
 
@@ -85,6 +87,8 @@ def load_game():
         cData = get_character_data(charID)
         Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
                            cData[9], cData[10], cData[11], cData[12], cData[13], cData[14])
+        weaponData = get_my_weapons(Player.charID)
+        Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
         Player.show_stats()
         return Player
     except ValueError:
@@ -128,7 +132,7 @@ def view_character(Player):
     print(indent(2) + "Resume Game \n")
     print(indent(2) + "View Weapons \n")
     print(indent(2) + "Edit Character \n")
-    load_player_options()
+    load_player_options(Player)
 
 
 # Load all the options a player can have in the menu

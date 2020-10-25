@@ -101,20 +101,54 @@ def get_next_scene(sceneType, choiceID):
 
 # Begin the event
 def play_event(Player, eventID):
-    skip_line(2)
+    skip_line(10)
     delay_print(get_scene_content(EVENT, eventID))
     print("You have entered an event, you may not pause until you complete this event")
     CurrEnemy = set_current_enemy(eventID)
     distance = random.randint(100, 1000)
     difficulty = get_difficulty(eventID)
     currState = MOVEMENT
-    while True:
+    while currState != EVENT_END:
         skip_line(2)
-        distance = read_state(Player, CurrEnemy, distance, currState, difficulty)
-        execute_state(Player, CurrEnemy, distance, currState, difficulty)
+        if currState == MOVEMENT:
+            if Player.currInitiative >= CurrEnemy.currInitiative:
+                distance = player_move(Player, distance, currState)
+                skip_line(2)
+                distance = ai_move(CurrEnemy, distance)
+            else:
+                distance = ai_move(CurrEnemy, distance)
+                skip_line(2)
+                distance = player_move(Player, distance, currState)
+            skip_line(2)
+            print("You are now " + str(distance) + " meters away from the enemy.")
+        elif currState == SHOOTING:
+            if distance >= 2:
+                if Player.currInitiative >= CurrEnemy.currInitiative:
+                    player_shoot(Player, CurrEnemy, distance, currState, difficulty)
+                    if not Player.check_living() or not CurrEnemy.check_living():
+                        return
+                    skip_line(2)
+                    ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
+                else:
+                    ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
+                    if not Player.check_living() or not CurrEnemy.check_living():
+                        return
+                    skip_line(2)
+                    player_shoot(Player, CurrEnemy, distance, currState, difficulty)
+        elif currState == MELEE:
+            if Player.currInitiative >= CurrEnemy.currInitiative:
+                player_melee(Player, CurrEnemy, distance)
+                if not Player.check_living() or not CurrEnemy.check_living():
+                    return
+                skip_line(2)
+                ai_melee(CurrEnemy)
+            else:
+                ai_melee(CurrEnemy)
+                if not Player.check_living() or not CurrEnemy.check_living():
+                    return
+                skip_line(2)
+                player_melee(Player, CurrEnemy, distance)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
-        if currState == EVENT_END:
-            return
 
 
 # Progress the game
@@ -129,22 +163,23 @@ def game_progress(currScene, Player):
             for choice in get_choices(currScene, STORY):
                 print(choice[0])
             skip_line(1)
-            try:
-                choiceID = int(input('Type in the number of your choice to progress, ' +
-                                     'type in any letter to open options: '))
+            # try:
+            choiceID = int(input('Type in the number of your choice to progress, ' +
+                                 'type in any letter to open options: '))
+            choiceResult = confirm_choice(currScene, STORY, choiceID)
+            while not choiceResult:
+                choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
                 choiceResult = confirm_choice(currScene, STORY, choiceID)
-                while not choiceResult:
-                    choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
-                    choiceResult = confirm_choice(currScene, STORY, choiceID)
-                pause = False
-                if event_exists(choiceResult):
-                    eventID = get_event(choiceResult)
-                    play_event(Player, eventID)
-                Player.corrupt(choiceResult)
-                currScene = get_next_scene(STORY, choiceResult)
-                game_progress(currScene, Player)
-            except ValueError:
-                render_options(Player)
+            pause = False
+            if event_exists(choiceResult):
+                eventID = get_event(choiceResult)
+                play_event(Player, eventID)
+            Player.reset_initiative()
+            Player.corrupt(choiceResult)
+            currScene = get_next_scene(STORY, choiceResult)
+            game_progress(currScene, Player)
+            # except ValueError:
+            #     render_options(Player)
     else:
         skip_line(5)
         end_game(currScene)
