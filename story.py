@@ -170,25 +170,25 @@ def game_progress(currScene, Player):
             for choice in get_choices(currScene, STORY):
                 print(choice[0])
             skip_line(1)
-            # try:
-            choiceID = int(input('Type in the number of your choice to progress, ' +
-                                 'type in any letter to open options: '))
-            choiceResult = confirm_choice(currScene, STORY, choiceID)
-            while not choiceResult:
-                choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
+            try:
+                choiceID = int(input('Type in the number of your choice to progress, ' +
+                                     'type in any letter to open options: '))
                 choiceResult = confirm_choice(currScene, STORY, choiceID)
-            pause = False
-            if event_exists(choiceResult):
-                eventID = get_event(choiceResult)
-                eventResult = play_event(Player, eventID)
-                if eventResult == 1:
-                    return
-            Player.reset_initiative()
-            Player.corrupt(choiceResult)
-            currScene = get_next_scene(STORY, choiceResult)
-            game_progress(currScene, Player)
-            # except ValueError:
-            #     render_options(Player)
+                while not choiceResult:
+                    choiceID = int(input('Please type a valid number, enter in any letter to open options: '))
+                    choiceResult = confirm_choice(currScene, STORY, choiceID)
+                pause = False
+                if event_exists(choiceResult):
+                    eventID = get_event(choiceResult)
+                    eventResult = play_event(Player, eventID)
+                    if eventResult == 1:
+                        return
+                Player.reset_initiative()
+                Player.corrupt(choiceResult)
+                currScene = get_next_scene(STORY, choiceResult)
+                game_progress(currScene, Player)
+            except ValueError:
+                render_options(Player)
     else:
         skip_line(5)
 
