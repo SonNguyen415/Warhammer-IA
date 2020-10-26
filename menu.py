@@ -13,9 +13,8 @@ def show_character_list():
     else:
         new = input("No saves available, type " + BUTTON + " for new game. Type anything else to return to main menu: ")
         if new.lower() == BUTTON:
-            new_game()
-            return
-        render_menu()
+            return new_game()
+        return render_menu()
     skip_line(1)
 
 
@@ -102,11 +101,10 @@ def new_game():
         if letter not in name.lower():
             count += 1
     if count >= 26:
-        render_menu()
-        return
+        return render_menu()
     Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
                        BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0)
-    weaponData = get_weapon_data(LASGUN_ID)[TYPE_NAME]
+    weaponData = get_weapon_data(LASGUN_ID)
     Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
     return customize_character(Player, START_PTS)
 
@@ -124,7 +122,7 @@ def load_game():
         Player.show_stats()
         return Player
     except ValueError:
-        render_menu()
+        return render_menu()
 
 
 # Delete a character from database and the weapons he owns

@@ -67,7 +67,7 @@ def provide_event_option(currState):
     sql = c.execute('SELECT OptionDescription FROM PhaseOption WHERE PhaseID = ' + str(currState))
     data = c.fetchall()
     for option in data:
-        print(option[0])
+        delay_print(option[0])
     skip_line(1)
     while True:
         try:
@@ -87,7 +87,7 @@ def get_initiative_cost(currState, choice):
 
 
 def get_phase_info(Player, currState):
-    print(get_phase_description(currState))
+    delay_print(get_phase_description(currState))
     show_stats(Player)
     choice = provide_event_option(currState)
     skip_line(2)
@@ -127,13 +127,20 @@ def get_ai_weapon_id(weaponList, type):
 
 
 def get_new_distance(Player, distance):
-    maxDisplacement = math.trunc(Player.stats[4] ^ 2 + Player.stats[2] * 2) * 10
-    displacement = int(input("Enter your desired movement, you can only move up to " + str(maxDisplacement) + " m: "))
-    if displacement > distance:
-        displacement = distance
-        print("You tried to move farther than the actual distance between you and the enemy. Unfortunately, your escape"
-              " attempt did not work and they have blocked your way. Next time just try to flee the other direction. ")
-    distance = distance - displacement
+    maxDisplacement = math.trunc(Player.stats[AGILITY] ^ 2 + Player.stats[ENDURANCE] * 2) * 10
+    error = True
+    while error:
+        try:
+            displacement = int(input("Enter your desired movement, you can only move up to " +
+                                     str(maxDisplacement) + " m: "))
+            if displacement > distance:
+                displacement = distance
+                delay_print("You tried to move farther than the actual distance between you and the enemy. "
+                            "Unfortunately, your escape attempt did not work and they have blocked your way. ")
+            distance = distance - displacement
+            error = False
+        except ValueError:
+            print("Please input an integer value.")
     return distance
 
 
@@ -149,11 +156,10 @@ def count_hit(maxNum, minScore, x):
 def calc_numHits(Attacker, Defender, weaponData, difficulty, distance):
     numShots = math.trunc(weaponData[RATE_OF_FIRE] / 10)
     print("Shot " + str(numShots) + " times")
-    attackerAccuracy = Attacker.stats[5] - difficulty
-    defenderAgility = difficulty + Defender.stats[4]
-    minScore = check_success(attackerAccuracy, defenderAgility) - (weaponData[4] - distance) / 1000
+    attackerAccuracy = Attacker.stats[ACCURACY] - difficulty
+    defenderAgility = difficulty + Defender.stats[AGILITY]
+    minScore = check_success(attackerAccuracy, defenderAgility) - (weaponData[WEAPON_RANGE] - distance) / 1000
     minScore = math.trunc(minScore)
-    print(minScore)
     numHits = count_hit(numShots, minScore, 1)
     return numHits
 
@@ -164,88 +170,140 @@ def calc_shooting_damage(Attacker, Defender, currWeapon, difficulty, distance, c
     if numHits > 0:
         print(str(numHits) + " shots have hit their mark.")
         weaponDamage = weaponData[WEAPON_DAMAGE] / 100
-        minScore = check_success(weaponDamage, Defender.stats[3])
+        minScore = check_success(weaponDamage, Defender.stats[DURABILITY])
         totalDamage = count_hit(numHits, minScore, weaponDamage)
-        Defender.stats[1] = Defender.stats[1] - totalDamage
-        print("HP is now at: " + str(Defender.stats[1]))
+        Defender.stats[HEALTH] = Defender.stats[DURABILITY] - totalDamage
+        print("Target HP is now at: " + str(Defender.stats[HEALTH]))
         Attacker.currInitiative -= get_initiative_cost(currState, choice)
     else:
         print("No hit! All shots have missed!")
     time.sleep(WAIT_TIME)
 
 
-def player_move(Player, distance, currState):
-    print(get_phase_description(currState))
+def player_move(Player, currState, distance):
+    delay_print(get_phase_description(currState))
     skip_line(1)
-    print("You are at the movement phase, you are " + str(distance) +
-          " m away from the enemy. You may attempt to move forward.")
-    checkWeapon = input("Warning! Movement decreases your initiative and you may not be able to shoot first next turn. "
-                        "Enter " + BUTTON + " to check your weapon range: \n")
-    if checkWeapon == BUTTON:
-        Player.show_inventory()
-    skip_line(3)
-    print("The maximum distance you can move this turn can be found by adding the square of your agility score "
-          "by twice your endurance score the multiply that by 10.")
+    delay_print("You are at the movement phase, you are " + str(distance) + " m away from the enemy.")
     skip_line(2)
-    choice = provide_event_option(currState)
-    if choice == 1:
-        Player.currInitiative -= get_initiative_cost(currState, choice)
-        return get_new_distance(Player, distance)
+    initiativeCost = get_initiative_cost(currState, 1)
+    if Player.currInitiative >= initiativeCost:
+        delay_print("You may attempt to move forward. Warning! Movement decreases your initiative and you may "
+                    "not be able to shoot first next turn or do anything at all.")
+        skip_line(2)
+        checkWeapon = input("You currently have " + str(Player.currInitiative) + " initiative points. Enter " + BUTTON +
+                            " to check your weapon range, maybe you can shoot next turn without moving: \n")
+        if checkWeapon == BUTTON:
+            Player.show_inventory()
+        skip_line(3)
+        delay_print("The maximum distance you can move this turn can be found by adding the square of your agility "
+                    "score by twice your endurance score the multiply that by 10.")
+        skip_line(2)
+        choice = provide_event_option(currState)
+        if choice == 1:
+            Player.currInitiative -= initiativeCost
+            return get_new_distance(Player, distance)
     else:
-        return distance
+        delay_print("Unfortunately, you don't have enough initiative points to move this turn. You need " +
+                    str(initiativeCost) + " points and you only have " + str(Player.currInitiative))
+
+    return distance
 
 
-def ai_move(CurrEnemy, distance):
-    maxDisplacement = math.trunc(CurrEnemy.stats[4] ^ 2 + CurrEnemy.stats[2] * 2) * 10
-    displacement = random.randint(0, maxDisplacement)
-    if displacement > distance:
-        displacement = distance
-    distance -= displacement
-    print("The enemy moved " + str(displacement) + " meters.")
+def ai_move(CurrEnemy, currState, distance):
+    initiativeCost = get_initiative_cost(currState, 1)
+    if CurrEnemy.currInitiative >= initiativeCost:
+        maxDisplacement = math.trunc(CurrEnemy.stats[AGILITY] ^ 2 + CurrEnemy.stats[ENDURANCE] * 2) * 10
+        displacement = random.randint(0, maxDisplacement)
+        if displacement > distance:
+            displacement = distance
+        distance -= displacement
+        print("The enemy moved " + str(displacement) + " meters.")
     return distance
 
 
 def player_shoot(Player, CurrEnemy, distance, currState, difficulty):
     choice = get_phase_info(Player, currState)
-    print("")
+    initiativeCost = get_initiative_cost(currState, choice)
+    while Player.currInitiative < initiativeCost:
+        delay_print("Unfortunately, you don't have enough initiative points for this action. You need " +
+                    str(initiativeCost) + " points and you only have " + str(Player.currInitiative))
+        choice = provide_event_option(currState)
+        initiativeCost = get_initiative_cost(currState, choice)
     if choice == 1:
         currWeapon = weapon_selection(Player, distance)
         if currWeapon != 0:
+            print("Your turn to shoot \n")
             calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
-            print("You shot the enemy, dealing much damage.")
             Player.damage_weapon(currWeapon)
             skip_line(2)
 
 
 def ai_shoot(CurrEnemy, Player, difficulty, distance, currState):
-    aiWeapon = get_ai_weapon(CurrEnemy.enemyID)
-    currWeapon = get_ai_weapon_id(aiWeapon, "Range")
-    if currWeapon != 0:
-        calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
-    skip_line(2)
-    return
+    initiativeCost = get_initiative_cost(currState, 1)
+    if CurrEnemy.currInitiative >= initiativeCost:
+        aiWeapon = get_ai_weapon(CurrEnemy.enemyID)
+        currWeapon = get_ai_weapon_id(aiWeapon, "Range")
+        if currWeapon != 0:
+            print("Enemy turn to shoot \n")
+            calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
+        skip_line(2)
 
 
-def melee_option(choice, currWeapon, Object):
+def melee_option(choice, currWeapon, Object, name):
     if choice == 1:
         if Object.defending:
             Object.unguard()
+        print(name + " decided to attack")
         Object.attack(currWeapon)
     else:
+        print(name + " decided to defend")
         Object.guard(currWeapon)
 
 
-def player_melee(Player, distance, currState):
+def melee_result(Player, CurrEnemy):
+    diceRoll = random.randint(0, 6)
+    skip_line(3)
+    print("Your HP is at: " + str(Player.stats[HEALTH]))
+    print("Enemy HP is at: " + str(CurrEnemy.stats[HEALTH]))
+    skip_line(1)
+    print("Your attack output is at: " + str(Player.damage))
+    print("Enemy attack output is at: " + str(CurrEnemy.damage))
+    if Player.defending and not CurrEnemy.defending:
+        Player.durability -= diceRoll
+        Player.stats[HEALTH] -= (CurrEnemy.damage - Player.durability)
+    elif not Player.defending and CurrEnemy.defending:
+        CurrEnemy.durability -= diceRoll
+        CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+    elif not Player.defending and not CurrEnemy.defending:
+        if Player.stats[AGILITY] >= CurrEnemy.stats[AGILITY]:
+            CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+            if not CurrEnemy.check_living():
+                return
+            Player.stats[HEALTH] -= (CurrEnemy.damage - Player.durability)
+        else:
+            Player[HEALTH] -= (CurrEnemy.damage - Player.durability)
+            if not Player.check_living():
+                return
+            CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+    skip_line(1)
+    print("Your durability is at: " + str(Player.durability))
+    print("Enemy durability is at: " + str(CurrEnemy.durability))
+    skip_line(3)
+    print("Your HP is now at: " + str(Player.stats[HEALTH]))
+    print("Enemy HP is now at: " + str(CurrEnemy.stats[HEALTH]))
+
+
+def player_melee(Player, currState, distance):
     choice = get_phase_info(Player, currState)
     currWeapon = weapon_selection(Player, distance)
-    melee_option(choice, currWeapon, Player)
+    melee_option(choice, currWeapon, Player, "You")
 
 
 def ai_melee(CurrEnemy):
     aiWeapon = get_ai_weapon(CurrEnemy.enemyID)
     currWeapon = get_ai_weapon_id(aiWeapon, "CQC")
     choice = random.randint(0, 1)
-    melee_option(choice, currWeapon, CurrEnemy)
+    melee_option(choice, currWeapon, CurrEnemy, "Enemy")
 
 
 def evaluate_state(Player, CurrEnemy, distance, currState):
@@ -256,16 +314,25 @@ def evaluate_state(Player, CurrEnemy, distance, currState):
         skip_line(5)
         if not Player.check_living() or not CurrEnemy.check_living():
             return EVENT_END
-        if distance < 2:
+        if distance < MELEE_DISTANCE:
             return MELEE
         return MOVEMENT
     elif currState == MELEE:
         skip_line(5)
         if not Player.check_living() or not CurrEnemy.check_living():
             return EVENT_END
-        if distance > 20:
-            print("You are too far away for melee actions, proceeding to shooting phase")
-            return SHOOTING
+        if distance > MELEE_DISTANCE:
+            print("You are too far away for melee actions, proceeding to movement phase")
+            return MOVEMENT
         return MELEE
     else:
         return EVENT_END
+
+
+def reset_initiative(Player, CurrEnemy, incr):
+    Player.currInitiative += incr
+    CurrEnemy.currInitiative += incr
+    if Player.currInitiative > Player.stats[0]:
+        Player.currInitiative = Player.stats[0]
+    if CurrEnemy.currInitiative > CurrEnemy.stats[0]:
+        CurrEnemy.currInitiative = CurrEnemy.stats[0]

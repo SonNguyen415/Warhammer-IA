@@ -6,17 +6,21 @@ import sys
 con = sq.connect("database/vilinius.db")
 c = con.cursor()
 
-
-
-BUTTON = "x"
 STORY = 0
 EVENT = 1
+
+BUTTON = "x"
 LASGUN_ID = 1
-STOP_TIME = 0
-WAIT_TIME = 0
+STOP_TIME = 0.03
+WAIT_TIME = 3
 START_PTS = 5
 ASC_POINTS = 5
 ASC_EXP = 100
+INITIATIVE_INCREASE = 1
+MELEE_DISTANCE = 4
+MIN_DISTANCE = 100
+MAX_DISTANCE = 200
+
 
 CORRUPTION_INCREASE = 10
 CORRUPTION_DIFFERENCE = 5
@@ -28,6 +32,14 @@ EVENT_END = 0
 MOVEMENT = 1
 SHOOTING = 2
 MELEE = 3
+
+INITIATIVE = 0
+HEALTH = 1
+STRENGTH = 2
+ENDURANCE = 3
+DURABILITY = 4
+AGILITY = 5
+ACCURACY = 6
 
 TYPE_ID = 0
 TYPE_NAME = 1
@@ -55,6 +67,7 @@ def delay_print(text):
         sys.stdout.write(w)
         sys.stdout.flush()
         time.sleep(STOP_TIME)
+    print(" ")
 
 
 # Skipping lines
@@ -65,7 +78,6 @@ def skip_line(line):
 
 # Print the intro and wait 2 seconds
 def print_intro():
-    # delay_print(introContent)
-    print("Yes")
-    time.sleep(2)
+    delay_print(introContent)
+    time.sleep(STOP_TIME)
     intro.close()
