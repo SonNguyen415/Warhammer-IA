@@ -150,7 +150,7 @@ def play_event(Player, eventID):
                 player_melee(Player, CurrEnemy, distance)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
     if Player.check_living():
-        Player.exp += CurrEnemy.stats[1]
+        Player.exp += CurrEnemy.stats[HEALTH]
         if Player.exp >= ASC_EXP:
             Player.ascend()
         return 0
