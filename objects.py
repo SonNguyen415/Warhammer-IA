@@ -20,12 +20,12 @@ class Weapon(object):
 
     # Show weapon data
     def display_weapon(self):
-        print(("Weapon ID: " + str(self.typeID), "Weapon Quality: " + str(self.quality), "Weapon Type: " +
+        print(("Weapon ID: " + str(self.wID), "Weapon Quality: " + str(self.quality), "Weapon Type: " +
                self.weaponType))
 
     # Show data of given weapon
     def show_weapon_data(self):
-        wData = get_weapon_data(self.wID)
+        wData = get_weapon_data(self.typeID)
         wAttr = get_table_data('TypeOfWeapon')
         for i in range(len(wData)):
             print(str(wAttr[i][1]) + ': ' + str(wData[i]))
@@ -40,10 +40,6 @@ class Enemy(object):
         self.durability = self.stats[4]
         self.defending = False
 
-    # Damage enemy
-    def wound(self, damage):
-        self.stats[1] -= damage
-
     # Check if enemy is dead
     def check_living(self):
         return self.stats[1] > 0
@@ -56,13 +52,14 @@ class Enemy(object):
         if currWeapon != 0:
             weaponData = get_weapon_data(currWeapon)
             weaponQuality = get_weapon_quality(currWeapon)
-            self.durability = self.stats[4] + ((weaponData[WEAPON_DURABILITY] + weaponQuality) / 10)
+            self.durability = self.stats[DURABILITY] + ((weaponData[WEAPON_DURABILITY] + weaponQuality) / 10)
             self.damage = 0
         else:
-            self.durability = self.stats[4]
+            print("No guarding cuz currWeapon is 0")
+            self.durability = self.stats[DURABILITY]
 
     def unguard(self):
-        self.durability = self.stats[4]
+        self.durability = self.stats[DURABILITY]
 
     def attack(self, currWeapon):
         if currWeapon != 0:
@@ -75,31 +72,23 @@ class Enemy(object):
 
 class Character(object):
     def __init__(self, charID, name, level, initiative, HP, strength, endurance, durability, agility, accuracy,
-                 inventoryCap, freePoints, exp, corruption, stress):
+                 inventoryCap, freePoints, exp, corruption, stress, progress):
         self.charID = charID
         self.name = name
         self.level = level
         self.stress = stress
         self.data = [initiative, HP, strength, endurance, durability, agility, accuracy, inventoryCap]
-        self.stats = []
+        self.stats = self.data
         self.freePoints = freePoints
         self.freeInventory = inventoryCap
         self.usedInventory = []
         self.corruption = corruption
         self.exp = exp
-        self.check_stats()
-        self.currInitiative = self.data[0]
+        self.progress = progress
+        self.currInitiative = self.data[INITIATIVE]
         self.damage = 0
-        self.durability = self.data[4]
+        self.durability = self.data[DURABILITY]
         self.defending = False
-
-    # Kill character
-    def kill(self):
-        self.stats[1] = 0
-
-    # Wound character
-    def wound(self, damage):
-        self.stats[1] -= damage
 
     # Check if character is alive
     def check_living(self):
@@ -107,8 +96,9 @@ class Character(object):
 
     # Check character stats
     def check_stats(self):
-        for attr in self.data:
-            self.stats.append(attr - math.trunc(math.sqrt(self.stress)))
+        for i in range(len(self.data)):
+            statVal = self.data[i] - math.trunc(math.sqrt(self.stress))
+            self.stats[i] = statVal
 
     # Fill the inventory with the data of the selected weapon
     def fill_inventory(self, weaponID, typeID, weaponType, weaponQuality):
@@ -131,20 +121,24 @@ class Character(object):
 
     def check_weapon_usability(self, weaponID):
         weapon = self.find_weapon(weaponID)
-        if weapon == 0:
-            return
         if weapon.quality == 0:
             discard = input("This weapon is broken. Do you want to discard this weapon? Enter " +
                             BUTTON + " to do so: ")
             if discard == BUTTON:
                 self.remove_inventory(weaponID)
-        return weapon.quality > 0
+        return weapon.quality < 0
 
     def damage_weapon(self, weaponID):
         weapon = self.find_weapon(weaponID)
         if weapon == 0:
             return
         weapon.lower_quality()
+
+    def get_weapon_list(self):
+        weaponList = []
+        for weapon in self.usedInventory:
+            weaponList.append(weapon.wID)
+        return weaponList
 
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
@@ -155,12 +149,13 @@ class Character(object):
                 weapon.display_weapon()
                 skip_line(1)
             try:
-                wIndex = int(input("Select an appropriate weapon id to view its data, or "
-                                   "enter a letter to continue: ")) - 1
+                weaponID = int(input("Select an appropriate weapon id to view its data, or "
+                                     "enter a letter to continue: "))
                 skip_line(1)
-                while wIndex < 0 or wIndex >= len(self.usedInventory):
-                    wIndex = int(input("Please select an appropriate id as listed above: ")) - 1
-                weapon = self.usedInventory[wIndex]
+                weaponList = self.get_weapon_list()
+                while weaponID not in weaponList:
+                    weaponID = int(input("Please select an appropriate id as listed above: "))
+                weapon = self.find_weapon(weaponID)
                 weapon.show_weapon_data()
                 time.sleep(WAIT_TIME)
                 skip_line(2)
@@ -194,8 +189,10 @@ class Character(object):
                 self.data[i] += val
                 self.freePoints = pt
                 if pt <= 0:
+                    self.check_stats()
                     return
             except ValueError:
+                self.check_stats()
                 return
 
     # Show character stats
@@ -209,7 +206,7 @@ class Character(object):
         print("Stress: " + str(self.stress))
         skip_line(1)
         for i, attr in enumerate(BASE_STATS[0]):
-            print(attr + ": " + str(self.data[i]))
+            print(attr + ": " + str(self.data[i]) + "   [" + str(self.stats[i]) + "]")
         skip_line(1)
         print("Free points to distribute: " + str(self.freePoints))
         time.sleep(WAIT_TIME)
@@ -218,11 +215,9 @@ class Character(object):
     # Update the character
     def save_character(self):
         if not_in_database(self.charID):
-            insert_character(self.charID, self.name, self.level, self.data, self.freePoints,
-                             self.corruption, self.exp, self.stress)
+            insert_character(self)
         else:
-            update_character(self.charID, self.level, self.data, self.freePoints,
-                             self.corruption, self.exp, self.stress)
+            update_character(self)
         for weapon in self.usedInventory:
             update_weapons(weapon.wID, weapon.quality, self.charID, weapon.typeID)
 
@@ -239,14 +234,14 @@ class Character(object):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.durability = self.stats[4] + (weaponData[WEAPON_DURABILITY] + weapon.quality) / 10
+            self.durability = self.stats[DURABILITY] + (weaponData[WEAPON_DURABILITY] + weapon.quality) / 10
         else:
-            self.durability = self.stats[4]
+            self.durability = self.stats[DURABILITY]
         self.damage = 0
 
     def unguard(self):
         self.defending = False
-        self.durability = self.stats[4]
+        self.durability = self.stats[DURABILITY]
 
     def attack(self, currWeapon):
         if currWeapon != 0:
@@ -254,7 +249,7 @@ class Character(object):
             weaponData = get_weapon_data(currWeapon)
             self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[2]) / 10
         else:
-            self.damage = self.stats[2]
+            self.damage = self.stats[STRENGTH]
 
     def reset_initiative(self):
-        self.currInitiative = self.stats[0]
+        self.currInitiative = self.stats[INITIATIVE]

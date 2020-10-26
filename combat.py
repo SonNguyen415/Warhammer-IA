@@ -97,10 +97,10 @@ def get_phase_info(Player, currState):
 def weapon_selection(Player, distance):
     print("Select your weapon. Make sure it has enough range.")
     Player.show_inventory()
-    currWeapon = int(input("Select your weapon: "))
-    while not Player.check_weapon_usability(currWeapon):
-        Player.show_inventory()
+    currWeapon = int(input("Enter the id of the weapon you would like to use: "))
+    while Player.check_weapon_usability(currWeapon):
         currWeapon = int(input("Your chosen weapon is broken, select another weapon: "))
+        Player.show_inventory()
     weaponData = get_weapon_data(currWeapon)
     skip_line(2)
     while weaponData[WEAPON_RANGE] < (distance * 10):
@@ -116,13 +116,33 @@ def weapon_selection(Player, distance):
     return currWeapon
 
 
-def get_ai_weapon_id(weaponList, type):
-    for weapon in weaponList:
-        sql = c.execute('SELECT TypeID FROM TypeOfWeapon WHERE TypeID = ' + str(weapon) + ' AND WeaponClass = "' +
-                        type + '"')
+def weapon_damage_comparison(data):
+    largestDamage = 0
+    currWeapon = 0
+    for weapon in data:
+        if weapon[1] >= largestDamage:
+            largestDamage = weapon[1]
+            currWeapon = weapon[0]
+    return currWeapon
+
+
+def get_ai_weapon_id(CurrEnemy, type):
+    data = []
+    if type == "Range":
+        sql = c.execute('SELECT TypeOfWeapon.TypeID,Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
+                        'EnemyWeapons.EnemyID = ' + str(CurrEnemy.enemyID) +
+                        ' AND TypeOfWeapon.TypeID = EnemyWeapons.TypeID AND TypeOfWeapon.WeaponClass = "Range"')
         data = c.fetchall()
-        if data:
-            return data[0][0]
+    elif type == "CQC":
+        sql = c.execute('SELECT TypeOfWeapon.TypeID,Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
+                        'EnemyWeapons.EnemyID = ' + str(CurrEnemy.enemyID) +
+                        ' AND TypeOfWeapon.TypeID = EnemyWeapons.TypeID')
+        data = c.fetchall()
+    if data:
+        currWeapon = weapon_damage_comparison(data)
+        sql = c.execute('SELECT TypeID FROM TypeOfWeapon WHERE TypeID = ' + str(currWeapon))
+        data = c.fetchall()
+        return data[0][0]
     return 0
 
 
@@ -136,8 +156,9 @@ def get_new_distance(Player, distance):
             if displacement > distance:
                 displacement = distance
                 delay_print("You tried to move farther than the actual distance between you and the enemy. "
-                            "Unfortunately, your escape attempt did not work and they have blocked your way. ")
+                            "Unfortunately, your escape attempt did not work and they have blocked your way. \n ")
             distance = distance - displacement
+            print("You moved a total of " + str(displacement) + " m")
             error = False
         except ValueError:
             print("Please input an integer value.")
@@ -241,22 +262,19 @@ def player_shoot(Player, CurrEnemy, distance, currState, difficulty):
 def ai_shoot(CurrEnemy, Player, difficulty, distance, currState):
     initiativeCost = get_initiative_cost(currState, 1)
     if CurrEnemy.currInitiative >= initiativeCost:
-        aiWeapon = get_ai_weapon(CurrEnemy.enemyID)
-        currWeapon = get_ai_weapon_id(aiWeapon, "Range")
+        currWeapon = get_ai_weapon_id(CurrEnemy, "Range")
         if currWeapon != 0:
             print("Enemy turn to shoot \n")
             calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
         skip_line(2)
 
 
-def melee_option(choice, currWeapon, Object, name):
+def melee_option(choice, currWeapon, Object):
     if choice == 1:
         if Object.defending:
             Object.unguard()
-        print(name + " decided to attack")
         Object.attack(currWeapon)
     else:
-        print(name + " decided to defend")
         Object.guard(currWeapon)
 
 
@@ -268,13 +286,19 @@ def melee_result(Player, CurrEnemy):
     skip_line(1)
     print("Your attack output is at: " + str(Player.damage))
     print("Enemy attack output is at: " + str(CurrEnemy.damage))
+    skip_line(2)
     if Player.defending and not CurrEnemy.defending:
+        print("Enemy decided to attack \n")
+        print("You are defending \n")
         Player.durability -= diceRoll
         Player.stats[HEALTH] -= (CurrEnemy.damage - Player.durability)
     elif not Player.defending and CurrEnemy.defending:
+        print("You decided to attack \n")
+        print("The enemy is defending \n")
         CurrEnemy.durability -= diceRoll
         CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
     elif not Player.defending and not CurrEnemy.defending:
+        print("Both you and the enemy decided to attack \n")
         if Player.stats[AGILITY] >= CurrEnemy.stats[AGILITY]:
             CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
             if not CurrEnemy.check_living():
@@ -285,6 +309,8 @@ def melee_result(Player, CurrEnemy):
             if not Player.check_living():
                 return
             CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+    else:
+        print("Both you and the enemy decided to guard. \n")
     skip_line(1)
     print("Your durability is at: " + str(Player.durability))
     print("Enemy durability is at: " + str(CurrEnemy.durability))
@@ -296,14 +322,13 @@ def melee_result(Player, CurrEnemy):
 def player_melee(Player, currState, distance):
     choice = get_phase_info(Player, currState)
     currWeapon = weapon_selection(Player, distance)
-    melee_option(choice, currWeapon, Player, "You")
+    melee_option(choice, currWeapon, Player)
 
 
 def ai_melee(CurrEnemy):
-    aiWeapon = get_ai_weapon(CurrEnemy.enemyID)
-    currWeapon = get_ai_weapon_id(aiWeapon, "CQC")
-    choice = random.randint(0, 1)
-    melee_option(choice, currWeapon, CurrEnemy, "Enemy")
+    currWeapon = get_ai_weapon_id(CurrEnemy, "CQC")
+    choice = 2
+    melee_option(choice, currWeapon, CurrEnemy)
 
 
 def evaluate_state(Player, CurrEnemy, distance, currState):
@@ -320,6 +345,7 @@ def evaluate_state(Player, CurrEnemy, distance, currState):
     elif currState == MELEE:
         skip_line(5)
         if not Player.check_living() or not CurrEnemy.check_living():
+            print("death is the end of all things")
             return EVENT_END
         if distance > MELEE_DISTANCE:
             print("You are too far away for melee actions, proceeding to movement phase")
@@ -329,7 +355,7 @@ def evaluate_state(Player, CurrEnemy, distance, currState):
         return EVENT_END
 
 
-def reset_initiative(Player, CurrEnemy, incr):
+def increase_initiative(Player, CurrEnemy, incr):
     Player.currInitiative += incr
     CurrEnemy.currInitiative += incr
     if Player.currInitiative > Player.stats[0]:

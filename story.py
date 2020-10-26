@@ -102,7 +102,7 @@ def get_next_scene(sceneType, choiceID):
 # Begin the event
 def play_event(Player, eventID):
     skip_line(10)
-    delay_print(get_scene_content(EVENT, eventID))
+    delay_print(get_scene_content(0, EVENT, eventID)[0][0])
     print("You have entered an event, you may not pause until you complete this event")
     CurrEnemy = set_current_enemy(eventID)
     distance = random.randint(MIN_DISTANCE, MAX_DISTANCE)
@@ -146,7 +146,7 @@ def play_event(Player, eventID):
                 player_melee(Player, currState, distance)
             melee_result(Player, CurrEnemy)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
-        reset_initiative(Player, CurrEnemy, INITIATIVE_INCREASE)
+        increase_initiative(Player, CurrEnemy, INITIATIVE_INCREASE)
         time.sleep(WAIT_TIME)
     if Player.check_living():
         Player.exp += CurrEnemy.stats[1]
@@ -185,9 +185,11 @@ def game_progress(currScene, Player):
                 Player.reset_initiative()
                 Player.corrupt(choiceResult)
                 currScene = get_next_scene(STORY, choiceResult)
+                Player.progress = currScene
                 game_progress(currScene, Player)
             except ValueError:
                 render_options(Player)
+                delay_print(scene_content[0][0])
     else:
         skip_line(5)
 

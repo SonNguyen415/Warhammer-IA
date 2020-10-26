@@ -51,27 +51,31 @@ def get_character_data(charID):
 
 
 # Change character stats
-def update_character(charID, lvl, val, fP, corruption, exp, stress):
-    sql = c.execute('UPDATE Characters SET CharLevel = ' + str(lvl) + ' WHERE CharID = ' + str(charID))
+def update_character(Player):
+    sql = c.execute('UPDATE Characters SET CharLevel = ' + str(Player.level) + ' WHERE CharID = ' + str(Player.charID))
     for i in range(0, len(BASE_STATS[0])):
-        sql = c.execute('UPDATE Characters SET ' + BASE_STATS[0][i] + ' = ' + str(val[i]) + ' WHERE CharID = ' +
-                        str(charID))
-    sql = c.execute('UPDATE Characters SET FreePoints = ' + str(fP) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET Progress = ' + str(currScene) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET CharCorruption = ' + str(corruption) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET CharExp = ' + str(exp) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET Stress = ' + str(stress) + ' WHERE CharID = ' + str(charID))
+        sql = c.execute('UPDATE Characters SET ' + BASE_STATS[0][i] + ' = ' + str(Player.data[i]) + ' WHERE CharID = ' +
+                        str(Player.charID))
+    sql = c.execute('UPDATE Characters SET FreePoints = ' + str(Player.freePoints) + ' WHERE CharID = ' +
+                    str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Corruption = ' + str(Player.corruption) + ' WHERE CharID = ' +
+                    str(Player.charID))
+    sql = c.execute('UPDATE Characters SET CharExp = ' + str(Player.exp) + ' WHERE CharID = ' + str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Stress = ' + str(Player.stress) + ' WHERE CharID = ' + str(Player.charID))
     con.commit()
 
 
 # Create a new character and insert into database
-def insert_character(charID, cName, cLevel, cData, cFP, cCorruption, cExp, cStress):
+def insert_character(Player):
     insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Initiative, Health, Strength, Endurance, '
                  'Durability, Agility, Accuracy, InventoryCap, FreePoints, CharExp, Corruption, Stress, Progress) '
-                 'Values (' + str(charID) + ', "' + str(cName) + '", ' + str(cLevel) + ', ' + str(cData[0]) + ', ' +
-                 str(cData[1]) + ', ' + str(cData[2]) + ', ' + str(cData[3]) + ', ' + str(cData[4]) + ', ' +
-                 str(cData[5]) + ', ' + str(cData[6]) + ', ' + str(cData[7]) + ', ' + str(cFP) + ',' + str(cExp) +
-                 ',' + str(cCorruption) + ', ' + str(cStress) + ', ' + str(currScene) + ')')
+                 'Values (' + str(Player.charID) + ', "' + str(Player.name) + '", ' + str(Player.level) + ', ' +
+                 str(Player.data[0]) + ', ' + str(Player.data[1]) + ', ' + str(Player.data[2]) + ', ' +
+                 str(Player.data[3]) + ', ' + str(Player.data[4]) + ', ' + str(Player.data[5]) + ', ' +
+                 str(Player.data[6]) + ', ' + str(Player.data[7]) + ', ' + str(Player.freePoints) + ',' +
+                 str(Player.exp) + ',' + str(Player.corruption) + ', ' + str(Player.stress) + ', ' +
+                 str(Player.progress) + ')')
     sql = c.execute(insertion)
     con.commit()
 
@@ -104,7 +108,6 @@ def get_id(obj):
         for i in range(0, len(data)):
             arr.append(data[i][0])
         for j in range(1, len(data)):
-            print(j in arr)
             if j not in arr:
                 return j
         return len(data) + 1

@@ -28,7 +28,7 @@ def customize_character(Player, pt):
     skip_line(3)
     if weapon.lower() == BUTTON:
         Player.show_inventory()
-    skip_line(1)
+    skip_line(2)
     print("No additional weapon is available at level 1, you may purchase more upon ascension. \n")
     dist = input("Enter " + BUTTON + " to distribute points. Enter any other button to skip and save for later: ")
     skip_line(3)
@@ -95,6 +95,7 @@ def load_player_options(Player):
 def new_game():
     skip_line(5)
     charID = get_id(0)
+
     name = input("Enter a name. Inputs with no letter will return to menu: ")
     count = 0
     for letter in list(string.ascii_lowercase):
@@ -103,7 +104,7 @@ def new_game():
     if count >= 26:
         return render_menu()
     Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
-                       BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0)
+                       BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0, 1)
     weaponData = get_weapon_data(LASGUN_ID)
     Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
     return customize_character(Player, START_PTS)
@@ -178,7 +179,7 @@ def load_menu():
     elif userOption.lower() == "exit game":
         exit_game()
     else:
-        load_menu()
+        return load_menu()
 
 
 # Load the options, you can save, resume, exit, and customize your character
