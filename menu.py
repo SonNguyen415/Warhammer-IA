@@ -95,7 +95,6 @@ def load_player_options(Player):
 def new_game():
     skip_line(5)
     charID = get_id(0)
-
     name = input("Enter a name. Inputs with no letter will return to menu: ")
     count = 0
     for letter in list(string.ascii_lowercase):
@@ -200,6 +199,8 @@ def load_options(Player):
 # Create menu and starting screen
 def render_menu():
     skip_line(40)
+    print("Disclaimer: This is a fan work. Warhammer 40k and all its content belongs to Games Worshop")
+    skip_line(2)
     delay_print("Welcome to Warhammer 40k. The grim dark future of humanity is at hand. \n"
                 "Survival is your objective in this bloody galaxy. Please type the following option as given: ")
     skip_line(2)
