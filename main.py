@@ -5,6 +5,7 @@ currScene = 1
 
 # Make the game
 print_intro()
+time.sleep(WAIT_TIME)
 while True:
     Player = render_menu()
     if in_database(Player.charID):
