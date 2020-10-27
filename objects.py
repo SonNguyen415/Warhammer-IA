@@ -218,8 +218,14 @@ class Character(object):
             insert_character(self)
         else:
             update_character(self)
+        weaponList = get_weapon_id_list()
+        for i in range(len(weaponList)):
+            weaponList[i] = weaponList[i][0]
         for weapon in self.usedInventory:
-            update_weapons(weapon.wID, weapon.quality, self.charID, weapon.typeID)
+            if weapon.wID not in weaponList:
+                update_weapons(weapon.wID, weapon.quality, self.charID, weapon.typeID)
+            else:
+                update_quality(weapon.quality, weapon.wID)
 
     # Increase character corruption
     def corrupt(self, choice):

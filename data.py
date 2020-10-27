@@ -8,9 +8,16 @@ def get_curr_progress(charID):
     return data[0][0]
 
 
-# Get the quality of a given weapon
-def get_weapon_quality(typeID):
-    sql = c.execute('SELECT Reliability FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
+# Get all weapon id
+def get_weapon_id_list():
+    sql = c.execute('SELECT WeaponID FROM Weapons')
+    data = c.fetchall()
+    return data
+
+
+# Get weapon quality
+def get_weapon_quality(wID):
+    sql = c.execute('SELECT Quality FROM Weapons WHERE WeaponID = ' + str(wID))
     data = c.fetchall()
     return data[0][0]
 
@@ -25,14 +32,15 @@ def get_my_weapons(charID):
 
 # Get all the weapons that you can buy
 def get_purchasable_weapons(charLevel):
-    sql = c.execute('SELECT TypeID, WeaponType, WeaponSize, Cost FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charLevel))
+    sql = c.execute(
+        'SELECT TypeID, WeaponType, WeaponSize, Cost FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charLevel))
     data = c.fetchall()
     return data
 
 
 # Get the stats of a given weapon
-def get_weapon_data(wID):
-    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
+def get_weapon_data(typeID):
+    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
     data = c.fetchall()
     return data[0]
 
@@ -58,7 +66,8 @@ def update_character(Player):
                         str(Player.charID))
     sql = c.execute('UPDATE Characters SET FreePoints = ' + str(Player.freePoints) + ' WHERE CharID = ' +
                     str(Player.charID))
-    sql = c.execute('UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + str(Player.charID))
+    sql = c.execute(
+        'UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + str(Player.charID))
     sql = c.execute('UPDATE Characters SET Corruption = ' + str(Player.corruption) + ' WHERE CharID = ' +
                     str(Player.charID))
     sql = c.execute('UPDATE Characters SET CharExp = ' + str(Player.exp) + ' WHERE CharID = ' + str(Player.charID))
@@ -85,6 +94,11 @@ def update_weapons(wID, quality, charID, typeID):
     insertion = ('INSERT INTO Weapons(WeaponID, Quality, CharID, TypeID) Values (' +
                  str(wID) + ', ' + str(quality) + ', ' + str(charID) + ', ' + str(typeID) + ')')
     sql = c.execute(insertion)
+    con.commit()
+
+
+def update_quality(quality, wID):
+    sql = c.execute('UPDATE Weapons SET Quality = ' + str(quality) + ' WHERE WeaponID = ' + str(wID))
     con.commit()
 
 

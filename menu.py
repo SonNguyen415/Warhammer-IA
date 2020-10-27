@@ -48,7 +48,7 @@ def view_weapons(Player):
         Player.remove_inventory(selection)
         return Player
     except ValueError:
-        print("Hello world")
+        return Player
 
 
 def purchase_weapons(Player):
