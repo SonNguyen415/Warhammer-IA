@@ -137,10 +137,10 @@ def get_character_list():
 
 
 # Check if character is in database
-def not_in_database(charID):
+def in_database(charID):
     sql = c.execute('SELECT * FROM Characters WHERE CharID = ' + str(charID))
     data = c.fetchall()
-    return not data
+    return data
 
 
 def get_table_data(table):

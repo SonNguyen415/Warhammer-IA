@@ -7,9 +7,7 @@ currScene = 1
 print_intro()
 while True:
     Player = render_menu()
-    if not_in_database(Player.charID):
-        currScene = 1
-    else:
+    if in_database(Player.charID):
         currScene = get_curr_progress(Player.charID)
     Player.check_stats()
     start_game()

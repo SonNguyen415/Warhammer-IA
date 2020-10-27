@@ -214,10 +214,10 @@ class Character(object):
 
     # Update the character
     def save_character(self):
-        if not_in_database(self.charID):
-            insert_character(self)
-        else:
+        if in_database(self.charID):
             update_character(self)
+        else:
+            insert_character(self)
         weaponList = get_weapon_id_list()
         for i in range(len(weaponList)):
             weaponList[i] = weaponList[i][0]
