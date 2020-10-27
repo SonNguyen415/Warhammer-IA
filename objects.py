@@ -44,10 +44,8 @@ class Enemy(object):
     def check_living(self):
         return self.stats[1] > 0
 
-    def attack(self):
-        self.damage = self.stats[2] + 10
-
-    def guard(self, currWeapon):
+    # Enable guard mode, guard mode raises defense and makes damage = 0
+    def enable_guard(self, currWeapon):
         self.defending = True
         if currWeapon != 0:
             weaponData = get_weapon_data(currWeapon)
@@ -58,9 +56,11 @@ class Enemy(object):
             print("No guarding cuz currWeapon is 0")
             self.durability = self.stats[DURABILITY]
 
-    def unguard(self):
+    # Disable guard mode
+    def disable_guard(self):
         self.durability = self.stats[DURABILITY]
 
+    # Set the attack damage
     def attack(self, currWeapon):
         if currWeapon != 0:
             weaponQuality = get_weapon_quality(currWeapon)
@@ -106,12 +106,14 @@ class Character(object):
         self.usedInventory.append(newWeapon)
         self.freeInventory -= newWeapon.size
 
+    # Find the weapon in the inventory given the weapon ID, return 0 if you can't find it
     def find_weapon(self, weaponID):
         for weapon in self.usedInventory:
             if weapon.wID == weaponID:
                 return weapon
         return 0
 
+    # remove a weapon from the inventory given the weapon id
     def remove_inventory(self, weaponID):
         weapon = self.find_weapon(weaponID)
         if weapon == 0:
@@ -119,6 +121,7 @@ class Character(object):
             return
         self.usedInventory.remove(weapon)
 
+    # Check if the weapon given is still usable
     def check_weapon_usability(self, weaponID):
         weapon = self.find_weapon(weaponID)
         if weapon.quality == 0:
@@ -128,12 +131,14 @@ class Character(object):
                 self.remove_inventory(weaponID)
         return weapon.quality < 0
 
+    # Damage the weapon due to usage
     def damage_weapon(self, weaponID):
         weapon = self.find_weapon(weaponID)
         if weapon == 0:
             return
         weapon.lower_quality()
 
+    # get the list of weapons in inventory
     def get_weapon_list(self):
         weaponList = []
         for weapon in self.usedInventory:
@@ -212,7 +217,7 @@ class Character(object):
         time.sleep(WAIT_TIME)
         skip_line(2)
 
-    # Update the character
+    # Update the character to database
     def save_character(self):
         if in_database(self.charID):
             update_character(self)
@@ -235,7 +240,8 @@ class Character(object):
             self.stress += 1
         self.corruption += CORRUPTION_INCREASE
 
-    def guard(self, currWeapon):
+    # Enable guard mode
+    def enable_guard(self, currWeapon):
         self.defending = True
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
@@ -245,10 +251,12 @@ class Character(object):
             self.durability = self.stats[DURABILITY]
         self.damage = 0
 
-    def unguard(self):
+    # Disable guard mode
+    def disable_guard(self):
         self.defending = False
         self.durability = self.stats[DURABILITY]
 
+    # Set attack damage in accordance to weapon damage
     def attack(self, currWeapon):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
@@ -257,5 +265,6 @@ class Character(object):
         else:
             self.damage = self.stats[STRENGTH]
 
+    # Reset player initiative
     def reset_initiative(self):
         self.currInitiative = self.stats[INITIATIVE]

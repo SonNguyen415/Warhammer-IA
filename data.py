@@ -8,7 +8,7 @@ def get_curr_progress(charID):
     return data[0][0]
 
 
-# Get all weapon id
+# Get all weapon id from the Weapons
 def get_weapon_id_list():
     sql = c.execute('SELECT WeaponID FROM Weapons')
     data = c.fetchall()
@@ -45,6 +45,7 @@ def get_weapon_data(typeID):
     return data[0]
 
 
+# Get the id of all the weapons an enemy possesses given their id
 def get_ai_weapon(enemyID):
     sql = c.execute('SELECT TypeID FROM EnemyWeapons WHERE EnemyID = ' + str(enemyID))
     data = c.fetchall()
@@ -143,13 +144,44 @@ def in_database(charID):
     return data
 
 
+# Get column table names and return it
 def get_table_data(table):
     sql = c.execute('PRAGMA table_info(' + table + ')')
     data = c.fetchall()
     return data
 
 
+# Get the corruption value of the choice the user took
 def check_corruption(choice):
     sql = c.execute('SELECT CorruptionValue FROM Storyline WHERE TextID = ' + str(choice))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the event of the current scene
+def get_event(choiceID):
+    sql = c.execute('SELECT StoryEvent FROM Storyline WHERE TextID = ' + str(choiceID))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the description of the phase you're in
+def get_phase_description(currState):
+    sql = c.execute('SELECT PhaseDescription FROM EventPhase WHERE PhaseID = ' + str(currState))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the difficulty level of the event
+def get_difficulty(eventID):
+    sql = c.execute('SELECT Difficulty FROM Event WHERE EventID = ' + str(eventID))
+    difficulty = c.fetchall()
+    return difficulty[0][0]
+
+
+# Get the initiative cost of an action
+def get_initiative_cost(currState, choice):
+    sql = c.execute('SELECT InitiativeCost FROM PhaseOption WHERE PhaseID = ' + str(currState) +
+                    ' AND OptionType = ' + str(choice))
     data = c.fetchall()
     return data[0][0]

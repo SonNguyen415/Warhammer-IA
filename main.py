@@ -11,8 +11,5 @@ while True:
         currScene = get_curr_progress(Player.charID)
     Player.check_stats()
     start_game()
-    currScene = game_progress(currScene, Player)
+    game_progress(currScene, Player)
     end_game()
-
-
-

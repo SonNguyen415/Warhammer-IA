@@ -1,6 +1,5 @@
 import string
 from objects import *
-import objects
 
 
 # Display a list of all characters saved in database
@@ -40,6 +39,7 @@ def customize_character(Player, pt):
     return Player
 
 
+# Display all weapons in inventory and ask if player wants to discard any
 def view_weapons(Player):
     Player.show_inventory()
     try:
@@ -51,6 +51,7 @@ def view_weapons(Player):
         return Player
 
 
+# Get weapon list that player can purchase and inquire upon their purchase. Tell them if they can't buy a weapon and why
 def purchase_weapons(Player):
     weaponList = get_purchasable_weapons(Player.level)
     print("You have " + str(Player.freeInventory) + " units of free space in your inventory \n")
@@ -76,6 +77,7 @@ def purchase_weapons(Player):
         return Player
 
 
+# Load the view character options
 def load_character_options(Player):
     userOption = input("Choose your options, type your choice as spelled: ")
     if userOption.lower() == "resume game":
@@ -90,6 +92,16 @@ def load_character_options(Player):
         return purchase_weapons(Player)
     else:
         return load_character_options(Player)
+
+
+# Show player stats and give option to edit it
+def view_character(Player):
+    Player.show_stats()
+    print(indent(2) + "Resume Game \n")
+    print(indent(2) + "View Weapons \n")
+    print(indent(2) + "Edit Character \n")
+    print(indent(2) + "Purchase Weapons \n")
+    return load_character_options(Player)
 
 
 # Load new game screen
@@ -155,16 +167,6 @@ def save_game(Player):
 # Close console and exit the game
 def exit_game():
     sys.exit(0)
-
-
-# Show player stats and give option to edit it
-def view_character(Player):
-    Player.show_stats()
-    print(indent(2) + "Resume Game \n")
-    print(indent(2) + "View Weapons \n")
-    print(indent(2) + "Edit Character \n")
-    print(indent(2) + "Purchase Weapons \n")
-    return load_character_options(Player)
 
 
 # Load all the options a player can have in the menu

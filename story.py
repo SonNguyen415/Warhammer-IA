@@ -111,50 +111,18 @@ def play_event(Player, eventID):
     while currState != EVENT_END:
         skip_line(2)
         if currState == MOVEMENT:
-            if Player.currInitiative >= CurrEnemy.currInitiative:
-                distance = player_move(Player, currState, distance)
-                skip_line(2)
-                distance = ai_move(CurrEnemy, currState, distance)
-            else:
-                distance = ai_move(CurrEnemy, currState, distance)
-                skip_line(2)
-                distance = player_move(Player, currState, distance)
+            distance = execute_movement(Player, CurrEnemy, distance, currState)
             skip_line(2)
             print("You are now " + str(distance) + " meters away from the enemy.")
         elif currState == SHOOTING:
             if distance >= MELEE_DISTANCE:
-                if Player.currInitiative >= CurrEnemy.currInitiative:
-                    player_shoot(Player, CurrEnemy, distance, currState, difficulty)
-                    if not Player.check_living() or not CurrEnemy.check_living():
-                        break
-                    skip_line(2)
-                    ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
-                else:
-                    ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
-                    if not Player.check_living() or not CurrEnemy.check_living():
-                        break
-                    skip_line(2)
-                    player_shoot(Player, CurrEnemy, distance, currState, difficulty)
+                death = execute_shooting(Player, CurrEnemy, distance, difficulty, currState)
+                if death == DEAD:
+                    break
         elif currState == MELEE:
-            if Player.currInitiative >= CurrEnemy.currInitiative:
-                player_melee(Player, currState, distance)
-                skip_line(2)
-                ai_melee(CurrEnemy)
-            else:
-                ai_melee(CurrEnemy)
-                skip_line(2)
-                player_melee(Player, currState, distance)
-            melee_result(Player, CurrEnemy)
+            execute_melee(Player, CurrEnemy, distance, currState)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
-        increase_initiative(Player, CurrEnemy, INITIATIVE_INCREASE)
-        time.sleep(WAIT_TIME)
-    if Player.check_living():
-        Player.exp += CurrEnemy.stats[1]
-        if Player.exp >= ASC_EXP:
-            Player.ascend()
-        return 0
-    else:
-        return 1
+    return receive_exp(Player, CurrEnemy)
 
 
 # Progress the game
@@ -180,7 +148,7 @@ def game_progress(currScene, Player):
                 if event_exists(choiceResult):
                     eventID = get_event(choiceResult)
                     eventResult = play_event(Player, eventID)
-                    if eventResult == 1:
+                    if eventResult == DEAD:
                         return
                 Player.reset_initiative()
                 Player.corrupt(choiceResult)
