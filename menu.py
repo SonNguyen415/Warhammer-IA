@@ -147,7 +147,7 @@ def delete_saves():
                                    "the menu, enter any letter: \n"))
             delete_character(deleteChar)
         except ValueError:
-            render_menu()
+            return render_menu()
 
 
 # Save current character and weapons to database
@@ -177,7 +177,7 @@ def load_menu():
     elif userOption.lower() == "load game":
         return load_game()
     elif userOption.lower() == "delete saves":
-        delete_saves()
+        return delete_saves()
     elif userOption.lower() == "exit game":
         exit_game()
     else:

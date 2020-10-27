@@ -271,17 +271,16 @@ def execute_shooting(Player, CurrEnemy, distance, difficulty, currState):
     if Player.currInitiative >= CurrEnemy.currInitiative:
         player_shoot(Player, CurrEnemy, distance, currState, difficulty)
         if not Player.check_living() or not CurrEnemy.check_living():
-            return DEAD
+            return
         skip_line(2)
         ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
     else:
         ai_shoot(CurrEnemy, Player, difficulty, distance, currState)
         if not Player.check_living() or not CurrEnemy.check_living():
-            return DEAD
+            return
         skip_line(2)
         player_shoot(Player, CurrEnemy, distance, currState, difficulty)
     time.sleep(WAIT_TIME)
-    return ALIVE
 
 
 # Set melee up based on the choice of the person

@@ -116,9 +116,7 @@ def play_event(Player, eventID):
             print("You are now " + str(distance) + " meters away from the enemy.")
         elif currState == SHOOTING:
             if distance >= MELEE_DISTANCE:
-                death = execute_shooting(Player, CurrEnemy, distance, difficulty, currState)
-                if death == DEAD:
-                    break
+                execute_shooting(Player, CurrEnemy, distance, difficulty, currState)
         elif currState == MELEE:
             execute_melee(Player, CurrEnemy, distance, currState)
         currState = evaluate_state(Player, CurrEnemy, distance, currState)
