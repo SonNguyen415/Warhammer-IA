@@ -8,4 +8,5 @@ How to Play:
 5. Launch the main.exe file
 6. Do as instructions tell you
 
+This game might take a while to load
 
