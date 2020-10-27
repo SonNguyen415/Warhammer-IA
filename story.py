@@ -188,7 +188,7 @@ def game_progress(currScene, Player):
                 Player.progress = currScene
                 game_progress(currScene, Player)
             except ValueError:
-                render_options(Player)
+                Player = render_options(Player)
                 delay_print(scene_content[0][0])
     else:
         skip_line(5)

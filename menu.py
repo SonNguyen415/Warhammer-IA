@@ -46,6 +46,7 @@ def view_weapons(Player):
         selection = int(input("Select a weapon id to discard from your inventory. "
                               "Enter any letter if you don't want to discard any: "))
         Player.remove_inventory(selection)
+        return Player
     except ValueError:
         print("Hello world")
 
@@ -70,25 +71,25 @@ def purchase_weapons(Player):
                                   "another id: "))
             weaponData = get_weapon_data(buyWeapon)
         Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
+        return Player
     except ValueError:
-        return
+        return Player
 
 
-def load_player_options(Player):
+def load_character_options(Player):
     userOption = input("Choose your options, type your choice as spelled: ")
     if userOption.lower() == "resume game":
-        return
+        return Player
     elif userOption.lower() == "view weapons":
-        view_weapons(Player)
-        load_player_options(Player)
+        return view_weapons(Player)
     elif userOption.lower() == "edit character":
         Player.customize()
-        load_player_options(Player)
+        skip_line(2)
+        return load_character_options(Player)
     elif userOption.lower() == "purchase weapons":
-        purchase_weapons(Player)
-        load_player_options(Player)
+        return purchase_weapons(Player)
     else:
-        load_player_options(Player)
+        return load_character_options(Player)
 
 
 # Load new game screen
@@ -116,7 +117,7 @@ def load_game():
         charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
         cData = get_character_data(charID)
         Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
-                           cData[9], cData[10], cData[11], cData[12], cData[13], cData[14])
+                           cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
         weaponData = get_my_weapons(Player.charID)
         Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
         Player.show_stats()
@@ -145,10 +146,10 @@ def save_game(Player):
         if insurance.lower() == BUTTON:
             Player.save_character()
             print("The game had been saved")
-            render_options(Player)
+            return render_options(Player)
         else:
             error = False
-            render_options(Player)
+            return render_options(Player)
 
 
 # Close console and exit the game
@@ -163,7 +164,7 @@ def view_character(Player):
     print(indent(2) + "View Weapons \n")
     print(indent(2) + "Edit Character \n")
     print(indent(2) + "Purchase Weapons \n")
-    load_player_options(Player)
+    return load_character_options(Player)
 
 
 # Load all the options a player can have in the menu
@@ -187,13 +188,13 @@ def load_options(Player):
     if userOption.lower() == "resume game":
         return
     elif userOption.lower() == "view characters":
-        view_character(Player)
+        return view_character(Player)
     elif userOption.lower() == "save game":
-        save_game(Player)
+        return save_game(Player)
     elif userOption.lower() == "exit game":
         exit_game()
     else:
-        load_options(Player)
+        return load_options(Player)
 
 
 # Create menu and starting screen
@@ -220,4 +221,4 @@ def render_options(Player):
     print(indent(2) + "View Characters \n")
     print(indent(2) + "Save Game \n")
     print(indent(2) + "Exit Game \n")
-    load_options(Player)
+    return load_options(Player)
