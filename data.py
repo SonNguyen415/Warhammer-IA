@@ -67,8 +67,8 @@ def update_character(Player):
                         str(Player.charID))
     sql = c.execute('UPDATE Characters SET FreePoints = ' + str(Player.freePoints) + ' WHERE CharID = ' +
                     str(Player.charID))
-    sql = c.execute(
-        'UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + 
+                    str(Player.charID))
     sql = c.execute('UPDATE Characters SET Corruption = ' + str(Player.corruption) + ' WHERE CharID = ' +
                     str(Player.charID))
     sql = c.execute('UPDATE Characters SET CharExp = ' + str(Player.exp) + ' WHERE CharID = ' + str(Player.charID))
