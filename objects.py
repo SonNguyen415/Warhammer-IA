@@ -35,14 +35,14 @@ class Enemy(object):
     def __init__(self, enemyID, initiative, HP, strength, endurance, durability, agility, accuracy):
         self.enemyID = enemyID
         self.stats = [initiative, HP, strength, endurance, durability, agility, accuracy]
-        self.currInitiative = self.stats[0]
+        self.currInitiative = self.stats[INITIATIVE]
         self.damage = 0
-        self.durability = self.stats[4]
+        self.durability = self.stats[DURABILITY]
         self.defending = False
 
     # Check if enemy is dead
     def check_living(self):
-        return self.stats[1] > 0
+        return self.stats[HEALTH] > 0
 
     # Enable guard mode, guard mode raises defense and makes damage = 0
     def enable_guard(self, currWeapon):
