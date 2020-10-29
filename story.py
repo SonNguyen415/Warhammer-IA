@@ -8,9 +8,9 @@ def end_game():
     time.sleep(WAIT_TIME)
     try:
         restart = int(input("Input any integer to restart. Input any letter to exit: "))
-        return
+        return True
     except ValueError:
-        exit_game()
+        return False
 
 
 # Check you can run an event
