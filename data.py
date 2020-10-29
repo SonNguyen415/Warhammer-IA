@@ -8,46 +8,48 @@ def get_curr_progress(charID):
     return data[0][0]
 
 
-# Get the quality of a given weapon
-def get_weapon_quality(typeID):
-    sql = c.execute('SELECT Reliability FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
+# Get all weapon id from the Weapons
+def get_weapon_id_list():
+    sql = c.execute('SELECT WeaponID FROM Weapons')
     data = c.fetchall()
-    return data[0][0]
+    return data
 
 
-# Get the size of a given weapon
-def get_weapon_size(typeID):
-    sql = c.execute('SELECT WeaponSize FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
+# Get weapon quality
+def get_weapon_quality(wID):
+    sql = c.execute('SELECT Quality FROM Weapons WHERE WeaponID = ' + str(wID))
     data = c.fetchall()
     return data[0][0]
 
 
 # Get my weapons
 def get_my_weapons(charID):
-    sql = c.execute('SELECT WeaponID, Quality, WeaponType FROM Weapons JOIN TypeOfWeapon WHERE CharID = ' + str(charID))
+    sql = c.execute('SELECT WeaponID, Weapons.TypeID, WeaponType, Quality FROM Weapons JOIN TypeOfWeapon WHERE CharID '
+                    '= ' + str(charID) + ' AND Weapons.TypeID = TypeOfWeapon.TypeID')
     data = c.fetchall()
     return data[0]
 
 
 # Get all the weapons that you can buy
-def get_purchasable_weapons(charID):
-    sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charID))
+def get_purchasable_weapons(charLevel):
+    sql = c.execute(
+        'SELECT TypeID, WeaponType, WeaponSize, Cost FROM TypeOfWeapon WHERE WeaponLevel <= ' + str(charLevel))
     data = c.fetchall()
-    return data[0]
+    return data
 
 
 # Get the stats of a given weapon
-def get_weapon_data(wID):
-    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
+def get_weapon_data(typeID):
+    sql = c.execute('SELECT * FROM TypeOfWeapon WHERE TypeID = ' + str(typeID))
     data = c.fetchall()
     return data[0]
 
 
-# Get weapon type
-def get_weapon_type(wID):
-    sql = c.execute('SELECT WeaponType FROM TypeOfWeapon WHERE TypeID = ' + str(wID))
+# Get the id of all the weapons an enemy possesses given their id
+def get_ai_weapon(enemyID):
+    sql = c.execute('SELECT TypeID FROM EnemyWeapons WHERE EnemyID = ' + str(enemyID))
     data = c.fetchall()
-    return data[0][0]
+    return data[0]
 
 
 # Get the info of the characters
@@ -58,27 +60,32 @@ def get_character_data(charID):
 
 
 # Change character stats
-def update_character(charID, lvl, val, fP, corruption, exp, stress):
-    sql = c.execute('UPDATE Characters SET CharLevel = ' + str(lvl) + ' WHERE CharID = ' + str(charID))
+def update_character(Player):
+    sql = c.execute('UPDATE Characters SET CharLevel = ' + str(Player.level) + ' WHERE CharID = ' + str(Player.charID))
     for i in range(0, len(BASE_STATS[0])):
-        sql = c.execute('UPDATE Characters SET ' + BASE_STATS[0][i] + ' = ' + str(val[i]) + ' WHERE CharID = ' +
-                        str(charID))
-    sql = c.execute('UPDATE Characters SET FreePoints = ' + str(fP) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET Progress = ' + str(currScene) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET CharCorruption = ' + str(corruption) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET CharExp = ' + str(exp) + ' WHERE CharID = ' + str(charID))
-    sql = c.execute('UPDATE Characters SET Stress = ' + str(stress) + ' WHERE CharID = ' + str(charID))
+        sql = c.execute('UPDATE Characters SET ' + BASE_STATS[0][i] + ' = ' + str(Player.data[i]) + ' WHERE CharID = ' +
+                        str(Player.charID))
+    sql = c.execute('UPDATE Characters SET FreePoints = ' + str(Player.freePoints) + ' WHERE CharID = ' +
+                    str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Progress = ' + str(Player.progress) + ' WHERE CharID = ' + 
+                    str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Corruption = ' + str(Player.corruption) + ' WHERE CharID = ' +
+                    str(Player.charID))
+    sql = c.execute('UPDATE Characters SET CharExp = ' + str(Player.exp) + ' WHERE CharID = ' + str(Player.charID))
+    sql = c.execute('UPDATE Characters SET Stress = ' + str(Player.stress) + ' WHERE CharID = ' + str(Player.charID))
     con.commit()
 
 
 # Create a new character and insert into database
-def insert_character(charID, cName, cLevel, cData, cFP, cCorruption, cExp, cStress):
-    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Strength, Endurance, Durability, Agility,'
-                 'Accuracy, InventoryCap, FreePoints, Progress, CharCorruption, CharExp, Stress, Health) Values (' +
-                 str(charID) + ', "' + str(cName) + '", ' + str(cLevel) + ', ' + str(cData[0]) + ', ' +
-                 str(cData[1]) + ', ' + str(cData[2]) + ', ' + str(cData[3]) + ', ' + str(cData[4]) + ', ' +
-                 str(cData[5]) + ', ' + str(cFP) + ',' + str(currScene) + ',' + str(cCorruption) + ', ' + str(cExp) +
-                 ', ' + str(cStress) + ')')
+def insert_character(Player):
+    insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Initiative, Health, Strength, Endurance, '
+                 'Durability, Agility, Accuracy, InventoryCap, FreePoints, CharExp, Corruption, Stress, Progress) '
+                 'Values (' + str(Player.charID) + ', "' + str(Player.name) + '", ' + str(Player.level) + ', ' +
+                 str(Player.data[0]) + ', ' + str(Player.data[1]) + ', ' + str(Player.data[2]) + ', ' +
+                 str(Player.data[3]) + ', ' + str(Player.data[4]) + ', ' + str(Player.data[5]) + ', ' +
+                 str(Player.data[6]) + ', ' + str(Player.data[7]) + ', ' + str(Player.freePoints) + ',' +
+                 str(Player.exp) + ',' + str(Player.corruption) + ', ' + str(Player.stress) + ', ' +
+                 str(Player.progress) + ')')
     sql = c.execute(insertion)
     con.commit()
 
@@ -88,6 +95,11 @@ def update_weapons(wID, quality, charID, typeID):
     insertion = ('INSERT INTO Weapons(WeaponID, Quality, CharID, TypeID) Values (' +
                  str(wID) + ', ' + str(quality) + ', ' + str(charID) + ', ' + str(typeID) + ')')
     sql = c.execute(insertion)
+    con.commit()
+
+
+def update_quality(quality, wID):
+    sql = c.execute('UPDATE Weapons SET Quality = ' + str(quality) + ' WHERE WeaponID = ' + str(wID))
     con.commit()
 
 
@@ -111,7 +123,6 @@ def get_id(obj):
         for i in range(0, len(data)):
             arr.append(data[i][0])
         for j in range(1, len(data)):
-            print(j in arr)
             if j not in arr:
                 return j
         return len(data) + 1
@@ -127,18 +138,50 @@ def get_character_list():
 
 
 # Check if character is in database
-def not_in_database(charID):
+def in_database(charID):
     sql = c.execute('SELECT * FROM Characters WHERE CharID = ' + str(charID))
     data = c.fetchall()
-    return not data
+    return data
 
 
-def check_corruption(charID):
-    return 5
+# Get column table names and return it
+def get_table_data(table):
+    sql = c.execute('PRAGMA table_info(' + table + ')')
+    data = c.fetchall()
+    return data
 
 
-# Show data of given weapon
-def show_weapon_data(weapon):
-    wData = get_weapon_data(weapon)
-    for attr in wData:
-        print(attr)
+# Get the corruption value of the choice the user took
+def check_corruption(choice):
+    sql = c.execute('SELECT CorruptionValue FROM Storyline WHERE TextID = ' + str(choice))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the event of the current scene
+def get_event(choiceID):
+    sql = c.execute('SELECT StoryEvent FROM Storyline WHERE TextID = ' + str(choiceID))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the description of the phase you're in
+def get_phase_description(currState):
+    sql = c.execute('SELECT PhaseDescription FROM EventPhase WHERE PhaseID = ' + str(currState))
+    data = c.fetchall()
+    return data[0][0]
+
+
+# Get the difficulty level of the event
+def get_difficulty(eventID):
+    sql = c.execute('SELECT Difficulty FROM Event WHERE EventID = ' + str(eventID))
+    difficulty = c.fetchall()
+    return difficulty[0][0]
+
+
+# Get the initiative cost of an action
+def get_initiative_cost(currState, choice):
+    sql = c.execute('SELECT InitiativeCost FROM PhaseOption WHERE PhaseID = ' + str(currState) +
+                    ' AND OptionType = ' + str(choice))
+    data = c.fetchall()
+    return data[0][0]
