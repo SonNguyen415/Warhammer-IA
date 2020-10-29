@@ -115,8 +115,9 @@ def new_game():
             count += 1
     if count >= 26:
         return render_menu()
-    Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
-                       BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0, 1)
+    Player = Character(charID, name, 1, BASE_STATS[1][INITIATIVE], BASE_STATS[1][HEALTH], BASE_STATS[1][STRENGTH], 
+                       BASE_STATS[1][ENDURANCE], BASE_STATS[1][DURABILITY], BASE_STATS[1][AGILITY], BASE_STATS[1][ACCURACY], 
+                       BASE_STATS[1][INVENTORY_CAP], START_PTS, 0, 0, 0, 1)
     weaponData = get_weapon_data(LASGUN_ID)
     Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
     return customize_character(Player, START_PTS)
