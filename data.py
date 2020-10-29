@@ -98,6 +98,7 @@ def update_weapons(wID, quality, charID, typeID):
     con.commit()
 
 
+# Update the weapon quality
 def update_quality(quality, wID):
     sql = c.execute('UPDATE Weapons SET Quality = ' + str(quality) + ' WHERE WeaponID = ' + str(wID))
     con.commit()
