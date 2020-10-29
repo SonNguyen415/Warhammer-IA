@@ -142,13 +142,15 @@ def load_game():
 # Delete a character from database and the weapons he owns
 def delete_saves():
     show_character_list()
-    while True:
+    deleting = True
+    while deleting:
         try:
             deleteChar = int(input("Please type the id of the character you wish to kill. If you wish to return to " +
                                    "the menu, enter any letter: \n"))
             delete_character(deleteChar)
         except ValueError:
-            return render_menu()
+            deleting = False
+    return render_menu()
 
 
 # Save current character and weapons to database
