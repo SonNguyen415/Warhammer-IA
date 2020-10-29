@@ -92,7 +92,7 @@ class Character(object):
 
     # Check if character is alive
     def check_living(self):
-        return self.stats[1] > 0
+        return self.stats[HEALTH] > 0
 
     # Check character stats
     def check_stats(self):
