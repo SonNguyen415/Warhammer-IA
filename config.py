@@ -25,9 +25,11 @@ MAX_DISTANCE = 1000
 CORRUPTION_INCREASE = 10
 CORRUPTION_DIFFERENCE = 5
 
+
 # Two dimensional array constant for the base stats the character can start with
 BASE_STATS = [["Initiative", "Health", "Strength", "Endurance", "Durability", "Agility", "Accuracy", "InventoryCap"],
               [10, 100, 10, 10, 10, 10, 10, 25]]
+
 
 # Constants for index value of base stats value, Character data (raw stats), and character stats (stats with stress)
 INITIATIVE = 0
@@ -39,19 +41,23 @@ AGILITY = 5
 ACCURACY = 6
 INVENTORY_CAP = 7
 
+
 # Constant for checking the living status of characters
 DEAD = 1
 ALIVE = 0
 
+
 # Story and event mode constants
 STORY = 0
 EVENT = 1
+
 
 # Event phase constants
 EVENT_END = 0
 MOVEMENT = 1
 SHOOTING = 2
 MELEE = 3
+
 
 # Constants of the weapon data index value. Use for readability
 TYPE_ID = 0
@@ -64,6 +70,8 @@ WEAPON_RELIABILITY = 7
 WEAPON_DURABILITY = 8
 WEAPON_COST = 10
 
+
+# Retrieving the text from the intro text file
 intro = open('database/intro.txt', 'r')
 introContent = intro.read()
 
