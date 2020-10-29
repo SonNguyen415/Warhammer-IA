@@ -14,3 +14,5 @@ while gameContinue:
     start_game()
     game_progress(currScene, Player)
     gameContinue = end_game()
+
+ exit_game()
