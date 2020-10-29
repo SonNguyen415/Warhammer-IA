@@ -18,10 +18,10 @@ def show_character_list():
 
 
 # Initial customization process, player can distribute their current free points towards their character
-def customize_character(Player, pt):
+def customize_character(Player):
     Player.show_stats()
     skip_line(1)
-    print("You have " + str(pt) + " starting points, spend them wisely. \n")
+    print("You have " + str(START_PTS) + " starting points, spend them wisely. \n")
     weapon = input("You have been provided with a lasgun. Enter " + BUTTON +
                    " to view your weapon. Enter any other button to skip: ")
     skip_line(3)
@@ -33,7 +33,7 @@ def customize_character(Player, pt):
     skip_line(3)
     if dist.lower() == BUTTON:
         print("You may input 0 if you don't wish to add points. Warning: undoing choices is not possible. You have " +
-              str(pt) + " points.\n")
+              str(START_PTS) + " points.\n")
         Player.customize()
     Player.show_stats()
     return Player
@@ -120,7 +120,7 @@ def new_game():
                        BASE_STATS[1][INVENTORY_CAP], START_PTS, 0, 0, 0, 1)
     weaponData = get_weapon_data(LASGUN_ID)
     Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
-    return customize_character(Player, START_PTS)
+    return customize_character(Player)
 
 
 # Allow loading game and change the current characterID
