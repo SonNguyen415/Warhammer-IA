@@ -17,7 +17,7 @@ def show_character_list():
     skip_line(1)
 
 
-# Begin customization process
+# Initial customization process, player can distribute their current free points towards their character
 def customize_character(Player, pt):
     Player.show_stats()
     skip_line(1)
