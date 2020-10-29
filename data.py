@@ -105,9 +105,10 @@ def update_quality(quality, wID):
 
 # Delete a character from database and all associated weapons
 def delete_character(charID):
+    delete2 = ('DELETE FROM Weapons WHERE CharID = ' + str(charID))
     delete1 = ('DELETE FROM Characters WHERE CharID = ' + str(charID))
-    # delete2 = ('DELETE FROM Weapons WHERE CharID = ' + str(charID))
     sql = c.execute(delete1)
+    sql = c.execute(delete2)
     con.commit()
 
 
