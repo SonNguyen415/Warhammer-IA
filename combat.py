@@ -391,10 +391,10 @@ def find_next_state(Player, CurrEnemy, distance, currState):
 def increase_initiative(Player, CurrEnemy, incr):
     Player.currInitiative += incr
     CurrEnemy.currInitiative += incr
-    if Player.currInitiative > Player.stats[0]:
-        Player.currInitiative = Player.stats[0]
-    if CurrEnemy.currInitiative > CurrEnemy.stats[0]:
-        CurrEnemy.currInitiative = CurrEnemy.stats[0]
+    if Player.currInitiative > Player.stats[INITIATIVE]:
+        Player.currInitiative = Player.stats[INITIATIVE]
+    if CurrEnemy.currInitiative > CurrEnemy.stats[INITIATIVE]:
+        CurrEnemy.currInitiative = CurrEnemy.stats[INITIATIVE]
 
 
 # Evaluate next phase: increase initiative and find the next state
@@ -407,7 +407,7 @@ def evaluate_state(Player, CurrEnemy, distance, currState):
 # Let the player receive exp if they survive the event. If they don't survive, report their death
 def receive_exp(Player, CurrEnemy):
     if Player.check_living():
-        Player.exp += CurrEnemy.stats[1]
+        Player.exp += CurrEnemy.stats[HEALTH]
         if Player.exp >= ASC_EXP:
             Player.ascend()
         return ALIVE
