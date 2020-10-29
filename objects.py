@@ -65,9 +65,9 @@ class Enemy(object):
         if currWeapon != 0:
             weaponQuality = get_weapon_quality(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[WEAPON_DAMAGE] + (weaponQuality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weaponQuality + self.stats[STRENGTH]) / 10
         else:
-            self.damage = self.stats[2]
+            self.damage = self.stats[STRENGTH]
 
 
 class Character(object):
@@ -261,7 +261,7 @@ class Character(object):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[STRENGTH]) / 10
         else:
             self.damage = self.stats[STRENGTH]
 
