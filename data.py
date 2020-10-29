@@ -59,7 +59,7 @@ def get_character_data(charID):
     return data[0]
 
 
-# Change character stats
+# Change character stats in the database to match the current data of the Player object
 def update_character(Player):
     sql = c.execute('UPDATE Characters SET CharLevel = ' + str(Player.level) + ' WHERE CharID = ' + str(Player.charID))
     for i in range(0, len(BASE_STATS[0])):
@@ -81,11 +81,11 @@ def insert_character(Player):
     insertion = ('INSERT INTO Characters(CharID, CharName, CharLevel, Initiative, Health, Strength, Endurance, '
                  'Durability, Agility, Accuracy, InventoryCap, FreePoints, CharExp, Corruption, Stress, Progress) '
                  'Values (' + str(Player.charID) + ', "' + str(Player.name) + '", ' + str(Player.level) + ', ' +
-                 str(Player.data[0]) + ', ' + str(Player.data[1]) + ', ' + str(Player.data[2]) + ', ' +
-                 str(Player.data[3]) + ', ' + str(Player.data[4]) + ', ' + str(Player.data[5]) + ', ' +
-                 str(Player.data[6]) + ', ' + str(Player.data[7]) + ', ' + str(Player.freePoints) + ',' +
-                 str(Player.exp) + ',' + str(Player.corruption) + ', ' + str(Player.stress) + ', ' +
-                 str(Player.progress) + ')')
+                 str(Player.data[INITIATIVE]) + ', ' + str(Player.data[HEALTH]) + ', ' + str(Player.data[STRENGTH]) + 
+                 ', ' + str(Player.data[ENDURANCE]) + ', ' + str(Player.data[DURABILITY]) + ', ' + 
+                 str(Player.data[AGILITY]) + ', ' + str(Player.data[ACCURACY]) + ', ' + str(Player.data[INITIATIVE]) + 
+                 ', ' + str(Player.freePoints) + ',' + str(Player.exp) + ',' + str(Player.corruption) + ', ' + 
+                 str(Player.stress) + ', ' + str(Player.progress) + ')')
     sql = c.execute(insertion)
     con.commit()
 
