@@ -74,13 +74,19 @@ def weapon_selection(Player, distance):
     print("Select your weapon. Make sure it has enough range.")
     Player.show_inventory()
     error = True
-    while error:
-        try: 
-            currWeapon = int(input("Enter the id of the weapon you would like to use: "))
-        except ValueError:
-            print("Please input an integer value")
-        else:
-            error = False
+    weapon = 0
+    while weapon == 0:
+        while error:
+            try: 
+                currWeapon = int(input("Enter the id of the weapon you would like to use: "))
+            except ValueError:
+                print("Please input an integer value")
+            else:
+                error = False
+            if weapon != 0:
+                break
+            else:
+                prin("Please input a valid weapon id") 
     while Player.check_weapon_usability(currWeapon):
         currWeapon = int(input("Your chosen weapon is broken, select another weapon: "))
         Player.show_inventory()
