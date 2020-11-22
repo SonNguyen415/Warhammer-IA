@@ -152,6 +152,10 @@ def game_progress(currScene, Player):
                 Player.corrupt(choiceResult)
                 currScene = get_next_scene(STORY, choiceResult)
                 Player.progress = currScene
+                skip_line(2)
+                print("Player stress: " + str(Player.stress))
+                print("Player corruption: " + str(Player.corruption))
+                skip_line(2)
                 game_progress(currScene, Player)
             except ValueError:
                 Player = render_options(Player)

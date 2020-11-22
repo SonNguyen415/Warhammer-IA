@@ -158,6 +158,7 @@ class Character(object):
                                      "enter a letter to continue: "))
                 skip_line(1)
                 weaponList = self.get_weapon_list()
+                print(weaponList)
                 while weaponID not in weaponList:
                     weaponID = int(input("Please select an appropriate id as listed above: "))
                 weapon = self.find_weapon(weaponID)
