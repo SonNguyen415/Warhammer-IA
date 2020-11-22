@@ -75,13 +75,8 @@ def weapon_selection(Player, distance):
     error = True
     weaponList = Player.get_weapon_list()
     currWeapon = 0
-<<<<<<< Updated upstream
-    while error:
-        Player.show_inventory()
-=======
     Player.show_inventory()
     while error:
->>>>>>> Stashed changes
         try:
             currWeapon = int(input("Enter the id of the weapon you would like to use, enter a non-integer to fight "
                                    "with your fists: "))
@@ -99,12 +94,7 @@ def weapon_selection(Player, distance):
             print("Your weapon range in meters can be found by dividing the given range by 10.")
             Player.show_inventory()
             try:
-<<<<<<< Updated upstream
                 currWeapon = int(input("Select a new weapon, make sure it has enough range. Enter any letter to skip: "))
-=======
-                currWeapon = int(
-                    input("Select a new weapon, make sure it has enough range. Enter any letter to skip: "))
->>>>>>> Stashed changes
                 weaponData = get_weapon_data(currWeapon)
             except ValueError:
                 return 0
