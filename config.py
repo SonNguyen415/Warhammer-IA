@@ -10,7 +10,7 @@ c = con.cursor()
 # Constants
 BUTTON = "x"
 LASGUN_ID = 1
-STOP_TIME = 0
+STOP_TIME = 0.2
 WAIT_TIME = 3
 START_PTS = 5
 ASC_POINTS = 10
