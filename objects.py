@@ -123,7 +123,6 @@ class Character(object):
 
     # Check if the weapon given is still usable
     def check_weapon_usability(self, weaponID):
-        weapon = self.find_weapon(weaponID)
         if weapon.quality == 0:
             discard = input("This weapon is broken. Do you want to discard this weapon? Enter " +
                             BUTTON + " to do so: ")
