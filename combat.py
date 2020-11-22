@@ -415,9 +415,9 @@ def find_next_state(Player, CurrEnemy, distance, currState):
 
 
 # Increase initiative after each phase so that game doesn't get stuck
-def increase_initiative(Player, CurrEnemy, incr):
-    Player.currInitiative += incr
-    CurrEnemy.currInitiative += incr
+def increase_initiative(Player, CurrEnemy):
+    Player.currInitiative += INITIATIVE_INCREASE
+    CurrEnemy.currInitiative += INITIATIVE_INCREASE
     if Player.currInitiative > Player.stats[0]:
         Player.currInitiative = Player.stats[0]
     if CurrEnemy.currInitiative > CurrEnemy.stats[0]:
@@ -426,7 +426,7 @@ def increase_initiative(Player, CurrEnemy, incr):
 
 # Evaluate next phase: increase initiative and find the next state
 def evaluate_state(Player, CurrEnemy, distance, currState):
-    increase_initiative(Player, CurrEnemy, INITIATIVE_INCREASE)
+    increase_initiative(Player, CurrEnemy)
     currState = find_next_state(Player, CurrEnemy, distance, currState)
     return currState
 
