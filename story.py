@@ -8,9 +8,9 @@ def end_game():
     time.sleep(WAIT_TIME)
     try:
         restart = int(input("Input any integer to restart. Input any letter to exit: "))
-        return
+        return True
     except ValueError:
-        exit_game()
+        return False
 
 
 # Check you can run an event
@@ -152,6 +152,10 @@ def game_progress(currScene, Player):
                 Player.corrupt(choiceResult)
                 currScene = get_next_scene(STORY, choiceResult)
                 Player.progress = currScene
+                skip_line(2)
+                print("Player stress: " + str(Player.stress))
+                print("Player corruption: " + str(Player.corruption))
+                skip_line(2)
                 game_progress(currScene, Player)
             except ValueError:
                 Player = render_options(Player)

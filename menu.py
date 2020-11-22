@@ -9,19 +9,17 @@ def show_character_list():
     if charList:
         for char in charList:
             print(indent(2) + 'Name: ' + str(char[0]) + ', ID: ' + str(char[1]) + "\n")
+        skip_line(1)
+        return False
     else:
-        new = input("No saves available, type " + BUTTON + " for new game. Type anything else to return to main menu: ")
-        if new.lower() == BUTTON:
-            return new_game()
-        return render_menu()
-    skip_line(1)
+        return True
 
 
-# Begin customization process
-def customize_character(Player, pt):
+# Initial customization process, player can distribute their current free points towards their character
+def customize_character(Player):
     Player.show_stats()
     skip_line(1)
-    print("You have " + str(pt) + " starting points, spend them wisely. \n")
+    print("You have " + str(START_PTS) + " starting points, spend them wisely. \n")
     weapon = input("You have been provided with a lasgun. Enter " + BUTTON +
                    " to view your weapon. Enter any other button to skip: ")
     skip_line(3)
@@ -33,7 +31,7 @@ def customize_character(Player, pt):
     skip_line(3)
     if dist.lower() == BUTTON:
         print("You may input 0 if you don't wish to add points. Warning: undoing choices is not possible. You have " +
-              str(pt) + " points.\n")
+              str(START_PTS) + " points.\n")
         Player.customize()
     Player.show_stats()
     return Player
@@ -115,39 +113,53 @@ def new_game():
             count += 1
     if count >= 26:
         return render_menu()
-    Player = Character(charID, name, 1, BASE_STATS[1][0], BASE_STATS[1][1], BASE_STATS[1][2], BASE_STATS[1][3],
-                       BASE_STATS[1][4], BASE_STATS[1][5], BASE_STATS[1][6], BASE_STATS[1][7], START_PTS, 0, 0, 0, 1)
+    Player = Character(charID, name, 1, BASE_STATS[1][INITIATIVE], BASE_STATS[1][HEALTH], BASE_STATS[1][STRENGTH], 
+                       BASE_STATS[1][ENDURANCE], BASE_STATS[1][DURABILITY], BASE_STATS[1][AGILITY], BASE_STATS[1][ACCURACY], 
+                       BASE_STATS[1][INVENTORY_CAP], START_PTS, 0, 0, 0, 1)
     weaponData = get_weapon_data(LASGUN_ID)
     Player.fill_inventory(get_id(1), weaponData[TYPE_ID], weaponData[TYPE_NAME], weaponData[WEAPON_RELIABILITY])
-    return customize_character(Player, START_PTS)
+    return customize_character(Player)
 
 
 # Allow loading game and change the current characterID
 def load_game():
-    show_character_list()
-    try:
-        charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
-        cData = get_character_data(charID)
-        Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
-                           cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
-        weaponData = get_my_weapons(Player.charID)
-        Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
-        Player.show_stats()
-        return Player
-    except ValueError:
+    if show_character_list():
+        new = input("No saves available, type " + BUTTON + " for new game. Type anything else to return to main menu: ")
+        if new.lower() == BUTTON:
+            return new_game()
         return render_menu()
+    cData = 0
+    while cData == 0:
+        try:
+            charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
+            cData = get_character_data(charID)
+        except ValueError:
+            return render_menu()
+    Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
+                       cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
+    weaponData = get_my_weapons(Player.charID)
+    Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
+    Player.show_stats()
+    return Player
 
 
 # Delete a character from database and the weapons he owns
 def delete_saves():
-    show_character_list()
-    while True:
+    deleting = True
+    while deleting:
+        if show_character_list():
+            new = input("No saves available, type " + BUTTON + " for new game. Type anything else to return to main "
+                                                               "menu: ")
+            if new.lower() == BUTTON:
+                return new_game()
+            return render_menu()
         try:
             deleteChar = int(input("Please type the id of the character you wish to kill. If you wish to return to " +
                                    "the menu, enter any letter: \n"))
             delete_character(deleteChar)
         except ValueError:
-            return render_menu()
+            deleting = False
+    return render_menu()
 
 
 # Save current character and weapons to database

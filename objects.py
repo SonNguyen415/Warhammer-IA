@@ -35,14 +35,14 @@ class Enemy(object):
     def __init__(self, enemyID, initiative, HP, strength, endurance, durability, agility, accuracy):
         self.enemyID = enemyID
         self.stats = [initiative, HP, strength, endurance, durability, agility, accuracy]
-        self.currInitiative = self.stats[0]
+        self.currInitiative = self.stats[INITIATIVE]
         self.damage = 0
-        self.durability = self.stats[4]
+        self.durability = self.stats[DURABILITY]
         self.defending = False
 
     # Check if enemy is dead
     def check_living(self):
-        return self.stats[1] > 0
+        return self.stats[HEALTH] > 0
 
     # Enable guard mode, guard mode raises defense and makes damage = 0
     def enable_guard(self, currWeapon):
@@ -65,9 +65,9 @@ class Enemy(object):
         if currWeapon != 0:
             weaponQuality = get_weapon_quality(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[WEAPON_DAMAGE] + (weaponQuality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weaponQuality + self.stats[STRENGTH]) / 10
         else:
-            self.damage = self.stats[2]
+            self.damage = self.stats[STRENGTH]
 
 
 class Character(object):
@@ -92,7 +92,7 @@ class Character(object):
 
     # Check if character is alive
     def check_living(self):
-        return self.stats[1] > 0
+        return self.stats[HEALTH] > 0
 
     # Check character stats
     def check_stats(self):
@@ -106,20 +106,27 @@ class Character(object):
         self.usedInventory.append(newWeapon)
         self.freeInventory -= newWeapon.size
 
-    # Find the weapon in the inventory given the weapon ID, return 0 if you can't find it
+    # Find the weapon in the inventory given the weapon ID, only works if weaponID is valid
     def find_weapon(self, weaponID):
         for weapon in self.usedInventory:
             if weapon.wID == weaponID:
                 return weapon
-        return 0
+
+    # check if given weapon id is in inventory
+    def get_weapon_list(self):
+        weaponList = []
+        for weapon in self.usedInventory:
+            weaponList.append(weapon.wID)
+        return weaponList
 
     # remove a weapon from the inventory given the weapon id
     def remove_inventory(self, weaponID):
-        weapon = self.find_weapon(weaponID)
-        if weapon == 0:
+        weaponList = self.get_weapon_list()
+        if weaponID in weaponList:
+            weapon = self.find_weapon(weaponID)
+            self.usedInventory.remove(weapon)
+        else:
             print("You own no such weapon")
-            return
-        self.usedInventory.remove(weapon)
 
     # Check if the weapon given is still usable
     def check_weapon_usability(self, weaponID):
@@ -138,16 +145,9 @@ class Character(object):
             return
         weapon.lower_quality()
 
-    # get the list of weapons in inventory
-    def get_weapon_list(self):
-        weaponList = []
-        for weapon in self.usedInventory:
-            weaponList.append(weapon.wID)
-        return weaponList
-
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
-        skip_line(2)
+        skip_line(3)
         displayingData = True
         while displayingData:
             for weapon in self.usedInventory:
@@ -158,6 +158,7 @@ class Character(object):
                                      "enter a letter to continue: "))
                 skip_line(1)
                 weaponList = self.get_weapon_list()
+                print(weaponList)
                 while weaponID not in weaponList:
                     weaponID = int(input("Please select an appropriate id as listed above: "))
                 weapon = self.find_weapon(weaponID)
@@ -261,7 +262,7 @@ class Character(object):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
             weaponData = get_weapon_data(currWeapon)
-            self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[2]) / 10
+            self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[STRENGTH]) / 10
         else:
             self.damage = self.stats[STRENGTH]
 
