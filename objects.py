@@ -106,23 +106,31 @@ class Character(object):
         self.usedInventory.append(newWeapon)
         self.freeInventory -= newWeapon.size
 
-    # Find the weapon in the inventory given the weapon ID, return 0 if you can't find it
+    # Find the weapon in the inventory given the weapon ID, only works if weaponID is valid
     def find_weapon(self, weaponID):
         for weapon in self.usedInventory:
             if weapon.wID == weaponID:
                 return weapon
-        return 0
+
+    # check if given weapon id is in inventory
+    def get_weapon_list(self):
+        weaponList = []
+        for weapon in self.usedInventory:
+            weaponList.append(weapon.wID)
+        return weaponList
 
     # remove a weapon from the inventory given the weapon id
     def remove_inventory(self, weaponID):
-        weapon = self.find_weapon(weaponID)
-        if weapon == 0:
+        weaponList = self.get_weapon_list()
+        if weaponID in weaponList:
+            weapon = self.find_weapon(weaponID)
+            self.usedInventory.remove(weapon)
+        else:
             print("You own no such weapon")
-            return
-        self.usedInventory.remove(weapon)
 
     # Check if the weapon given is still usable
     def check_weapon_usability(self, weaponID):
+        weapon = self.find_weapon(weaponID)
         if weapon.quality == 0:
             discard = input("This weapon is broken. Do you want to discard this weapon? Enter " +
                             BUTTON + " to do so: ")
@@ -137,16 +145,9 @@ class Character(object):
             return
         weapon.lower_quality()
 
-    # get the list of weapons in inventory
-    def get_weapon_list(self):
-        weaponList = []
-        for weapon in self.usedInventory:
-            weaponList.append(weapon.wID)
-        return weaponList
-
     # Show everything in the inventory and show each weapon in the inventory
     def show_inventory(self):
-        skip_line(2)
+        skip_line(3)
         displayingData = True
         while displayingData:
             for weapon in self.usedInventory:

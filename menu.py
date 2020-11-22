@@ -126,17 +126,19 @@ def new_game():
 # Allow loading game and change the current characterID
 def load_game():
     show_character_list()
-    try:
-        charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
-        cData = get_character_data(charID)
-        Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
-                           cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
-        weaponData = get_my_weapons(Player.charID)
-        Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
-        Player.show_stats()
-        return Player
-    except ValueError:
-        return render_menu()
+    cData = 0
+    while cData == 0:
+        try:
+            charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
+            cData = get_character_data(charID)
+        except ValueError:
+            return render_menu()
+    Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
+                               cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
+    weaponData = get_my_weapons(Player.charID)
+    Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
+    Player.show_stats()
+    return Player
 
 
 # Delete a character from database and the weapons he owns

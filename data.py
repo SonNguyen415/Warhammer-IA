@@ -56,7 +56,9 @@ def get_ai_weapon(enemyID):
 def get_character_data(charID):
     sql = c.execute('SELECT * FROM Characters WHERE CharID = ' + str(charID))
     data = c.fetchall()
-    return data[0]
+    if data:
+        return data[0]
+    return 0
 
 
 # Change character stats in the database to match the current data of the Player object
