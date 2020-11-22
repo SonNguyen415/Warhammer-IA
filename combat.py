@@ -87,8 +87,8 @@ def weapon_selection(Player, distance):
         skip_line(2)
     if currWeapon != 0:
         weaponData = get_weapon_data(currWeapon)
-        skip_line(2)
         while weaponData[WEAPON_RANGE] < (distance * 10):
+            skip_line(2)
             print("Your chosen weapon does not have enough range. Pick another weapon. You can also press " + BUTTON +
                   " to skip if you don't find one with enough range. \n")
             print("Your weapon range in meters can be found by dividing the given range by 10.")
@@ -116,12 +116,12 @@ def weapon_damage_comparison(data):
 def get_ai_weapon_id(CurrEnemy, type):
     data = []
     if type == "Range":
-        sql = c.execute('SELECT TypeOfWeapon.TypeID,Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
+        sql = c.execute('SELECT TypeOfWeapon.TypeID, Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
                         'EnemyWeapons.EnemyID = ' + str(CurrEnemy.enemyID) +
                         ' AND TypeOfWeapon.TypeID = EnemyWeapons.TypeID AND TypeOfWeapon.WeaponClass = "Range"')
         data = c.fetchall()
     elif type == "CQC":
-        sql = c.execute('SELECT TypeOfWeapon.TypeID,Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
+        sql = c.execute('SELECT TypeOfWeapon.TypeID, Damage FROM TypeOfWeapon JOIN EnemyWeapons WHERE '
                         'EnemyWeapons.EnemyID = ' + str(CurrEnemy.enemyID) +
                         ' AND TypeOfWeapon.TypeID = EnemyWeapons.TypeID')
         data = c.fetchall()
@@ -258,6 +258,9 @@ def ai_shoot(CurrEnemy, Player, difficulty, distance, currState):
     initiativeCost = get_initiative_cost(currState, 1)
     if CurrEnemy.currInitiative >= initiativeCost:
         currWeapon = get_ai_weapon_id(CurrEnemy, "Range")
+        weaponData = get_weapon_data(currWeapon)
+        if weaponData[WEAPON_RANGE] < distance * 10:
+            return
         if currWeapon != 0:
             print("Enemy turn to shoot \n")
             calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
