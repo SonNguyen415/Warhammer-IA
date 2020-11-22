@@ -77,7 +77,7 @@ def weapon_selection(Player, distance):
     while error:
         try: 
             currWeapon = int(input("Enter the id of the weapon you would like to use: "))
-        except valueError:
+        except ValueError:
             print("Please input an integer value")
         else:
             error = False
@@ -139,6 +139,8 @@ def get_new_distance(Player, distance):
         try:
             displacement = int(input("Enter your desired movement, you can only move up to " +
                                      str(maxDisplacement) + " m: "))
+            if displacement > maxDisplacement:
+                displacement = maxDisplacement
             if displacement > distance:
                 displacement = distance
                 delay_print("You tried to move farther than the actual distance between you and the enemy. "
