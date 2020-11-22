@@ -129,12 +129,21 @@ def load_game():
     cData = 0
     while cData == 0:
         try:
+<<<<<<< Updated upstream
             charID = int(input("Please type in your character id. If you wish to return to menu, enter any letter: \n"))
+=======
+            charID = int(
+                input("Please type in a valid id. If you wish to return to menu, enter any letter: \n"))
+>>>>>>> Stashed changes
             cData = get_character_data(charID)
         except ValueError:
             return render_menu()
     Player = Character(cData[0], cData[1], cData[2], cData[3], cData[4], cData[5], cData[6], cData[7], cData[8],
+<<<<<<< Updated upstream
                                cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
+=======
+                       cData[9], cData[10], cData[11], cData[12], cData[13], cData[14], cData[15])
+>>>>>>> Stashed changes
     weaponData = get_my_weapons(Player.charID)
     Player.fill_inventory(weaponData[0], weaponData[1], weaponData[2], weaponData[3])
     Player.show_stats()

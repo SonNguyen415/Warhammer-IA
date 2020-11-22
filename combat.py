@@ -75,8 +75,13 @@ def weapon_selection(Player, distance):
     error = True
     weaponList = Player.get_weapon_list()
     currWeapon = 0
+<<<<<<< Updated upstream
     while error:
         Player.show_inventory()
+=======
+    Player.show_inventory()
+    while error:
+>>>>>>> Stashed changes
         try:
             currWeapon = int(input("Enter the id of the weapon you would like to use, enter a non-integer to fight "
                                    "with your fists: "))
@@ -94,7 +99,12 @@ def weapon_selection(Player, distance):
             print("Your weapon range in meters can be found by dividing the given range by 10.")
             Player.show_inventory()
             try:
+<<<<<<< Updated upstream
                 currWeapon = int(input("Select a new weapon, make sure it has enough range. Enter any letter to skip: "))
+=======
+                currWeapon = int(
+                    input("Select a new weapon, make sure it has enough range. Enter any letter to skip: "))
+>>>>>>> Stashed changes
                 weaponData = get_weapon_data(currWeapon)
             except ValueError:
                 return 0
@@ -318,6 +328,14 @@ def ai_melee(CurrEnemy):
     melee_option(choice, currWeapon, CurrEnemy)
 
 
+# Constrain the net damage so it's not a negative value in case durability is higher than damage
+def constrain_damage(damage, durability):
+    netDamage = damage - durability
+    if netDamage < 0:
+        netDamage = 0
+    return netDamage
+
+
 # Calculate the result of the melee
 def melee_result(Player, CurrEnemy):
     diceRoll = random.randint(0, 6)
@@ -332,24 +350,32 @@ def melee_result(Player, CurrEnemy):
         print("Enemy decided to attack \n")
         print("You are defending \n")
         Player.durability -= diceRoll
-        Player.stats[HEALTH] -= (CurrEnemy.damage - Player.durability)
+        damage = constrain_damage(CurrEnemy.damage, Player.durability)
+        Player.stats[HEALTH] -= damage
     elif not Player.defending and CurrEnemy.defending:
         print("You decided to attack \n")
         print("The enemy is defending \n")
         CurrEnemy.durability -= diceRoll
-        CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+        damage = constrain_damage(CurrEnemy.damage, CurrEnemy.durability)
+        CurrEnemy.stats[HEALTH] -= damage
     elif not Player.defending and not CurrEnemy.defending:
         print("Both you and the enemy decided to attack \n")
+        Player.durability -= diceRoll
+        CurrEnemy.durability -= diceRoll
         if Player.stats[AGILITY] >= CurrEnemy.stats[AGILITY]:
-            CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+            damage = constrain_damage(Player.damage, CurrEnemy.durability)
+            CurrEnemy.stats[HEALTH] -= damage
             if not CurrEnemy.check_living():
                 return
-            Player.stats[HEALTH] -= (CurrEnemy.damage - Player.durability)
+            damage = constrain_damage(CurrEnemy.damage, Player.durability)
+            Player.stats[HEALTH] -= damage
         else:
-            Player[HEALTH] -= (CurrEnemy.damage - Player.durability)
+            damage = constrain_damage(CurrEnemy.damage, Player.durability)
+            Player.stats[HEALTH] -= damage
             if not Player.check_living():
                 return
-            CurrEnemy.stats[HEALTH] -= (Player.damage - CurrEnemy.durability)
+            damage = constrain_damage(Player.damage, CurrEnemy.durability)
+            CurrEnemy.stats[HEALTH] -= damage
     else:
         print("Both you and the enemy decided to guard. \n")
     skip_line(1)
