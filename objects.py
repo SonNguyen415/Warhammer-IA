@@ -246,7 +246,7 @@ class Character(object):
         self.defending = True
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
-            weaponData = get_weapon_data(currWeapon)
+            weaponData = get_weapon_data(weapon.typeID)
             self.durability = self.stats[DURABILITY] + (weaponData[WEAPON_DURABILITY] + weapon.quality) / 10
         else:
             self.durability = self.stats[DURABILITY]
@@ -261,7 +261,7 @@ class Character(object):
     def attack(self, currWeapon):
         if currWeapon != 0:
             weapon = self.find_weapon(currWeapon)
-            weaponData = get_weapon_data(currWeapon)
+            weaponData = get_weapon_data(weapon.typeID)
             self.damage = weaponData[WEAPON_DAMAGE] + (weapon.quality + self.stats[STRENGTH]) / 10
         else:
             self.damage = self.stats[STRENGTH]
@@ -269,3 +269,8 @@ class Character(object):
     # Reset player initiative
     def reset_initiative(self):
         self.currInitiative = self.stats[INITIATIVE]
+
+    # Get the type id of a weapon
+    def get_weapon_type(self, weaponID):
+        weapon = self.find_weapon(weaponID)
+        return weapon.typeID

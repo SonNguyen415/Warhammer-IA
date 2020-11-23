@@ -45,6 +45,7 @@ def get_weapon_data(typeID):
     return data[0]
 
 
+
 # Get the id of all the weapons an enemy possesses given their id
 def get_ai_weapon(enemyID):
     sql = c.execute('SELECT TypeID FROM EnemyWeapons WHERE EnemyID = ' + str(enemyID))

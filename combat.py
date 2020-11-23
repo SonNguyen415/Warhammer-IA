@@ -86,8 +86,11 @@ def weapon_selection(Player, distance):
             error = False
         skip_line(2)
     if currWeapon != 0:
-        weaponData = get_weapon_data(currWeapon)
+        weaponType = Player.get_weapon_type(currWeapon)
+        weaponData = get_weapon_data(weaponType)
         while weaponData[WEAPON_RANGE] < (distance * 10):
+            print(weaponData[WEAPON_RANGE])
+            print(distance)
             skip_line(2)
             print("Your chosen weapon does not have enough range. Pick another weapon. You can also press " + BUTTON +
                   " to skip if you don't find one with enough range. \n")
@@ -95,7 +98,9 @@ def weapon_selection(Player, distance):
             Player.show_inventory()
             try:
                 currWeapon = int(input("Select a new weapon, make sure it has enough range. Enter any letter to skip: "))
-                weaponData = get_weapon_data(currWeapon)
+                weaponType = Player.get_weapon_type(currWeapon)
+                print(weaponType)
+                weaponData = get_weapon_data(weaponType)
             except ValueError:
                 return 0
     return currWeapon
@@ -220,8 +225,7 @@ def calc_numHits(Attacker, Defender, weaponData, difficulty, distance):
 
 
 # Calculate the shooting damage
-def calc_shooting_damage(Attacker, Defender, currWeapon, difficulty, distance, currState, choice):
-    weaponData = get_weapon_data(currWeapon)
+def calc_shooting_damage(Attacker, Defender, weaponData, difficulty, distance, currState, choice):
     numHits = calc_numHits(Attacker, Defender, weaponData, difficulty, distance)
     if numHits > 0:
         print(str(numHits) + " shots have hit their mark.")
@@ -246,9 +250,11 @@ def player_shoot(Player, CurrEnemy, distance, currState, difficulty):
         initiativeCost = get_initiative_cost(currState, choice)
     if choice == 1:
         currWeapon = weapon_selection(Player, distance)
+        weaponType = Player.get_weapon_type(currWeapon)
+        weaponData = get_weapon_data(weaponType)
         if currWeapon != 0:
             print("Your turn to shoot \n")
-            calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
+            calc_shooting_damage(Player, CurrEnemy, weaponData, difficulty, distance, currState, 1)
             Player.damage_weapon(currWeapon)
             skip_line(2)
 
@@ -263,7 +269,7 @@ def ai_shoot(CurrEnemy, Player, difficulty, distance, currState):
             return
         if currWeapon != 0:
             print("Enemy turn to shoot \n")
-            calc_shooting_damage(Player, CurrEnemy, currWeapon, difficulty, distance, currState, 1)
+            calc_shooting_damage(Player, CurrEnemy, weaponData, difficulty, distance, currState, 1)
         skip_line(2)
 
 
